@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GDPR DPA Generator for SaaS — Article 28 Drafts</title>
+  <meta name="description" content="Generate a customer-specific GDPR Article 28 DPA draft for your SaaS. Review each clause, copy or print, and track up to 20 customers locally. Free.">
+  <link rel="canonical" href="https://saasdpalab.com/">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="GDPR DPA Generator">
+  <meta property="og:title" content="GDPR DPA Generator for SaaS — Article 28 Drafts">
+  <meta property="og:description" content="Generate a customer-specific GDPR Article 28 DPA draft for your SaaS. Review each clause, copy or print, and track up to 20 customers locally. Free.">
+  <meta property="og:url" content="https://saasdpalab.com/">
+  <meta property="og:image" content="https://saasdpalab.com/assets/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="GDPR DPA Generator for SaaS">
+  <meta name="twitter:description" content="Customer-specific Article 28 DPA drafts: review each clause, copy or print, keep a local workspace. Free in this MVP.">
+  <meta name="twitter:image" content="https://saasdpalab.com/assets/og-image.png">
+  <link rel="stylesheet" href="style.css?v=0.3.2">
+  <script src="_site_config.js?v=0.3.2"></script>
+  <script src="gdpr-dpa-saas-telemetry.js?v=0.3.2"></script>
+  <script type="module" src="app.js?v=0.3.2"></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "GDPR DPA Generator for SaaS",
+    "url": "https://saasdpalab.com/",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Any modern browser",
+    "inLanguage": "en",
+    "description": "A free tool for SaaS companies acting as a processor. It generates a customer-specific Article 28 data processing agreement draft from structured processing facts, then lets you review, correct, copy and print it.",
+    "isAccessibleForFree": true,
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "Customer-specific Article 28 DPA draft generated on the server",
+      "Clause-by-clause review with server-generated alternatives",
+      "Copy the full draft to the clipboard",
+      "Print the draft with the browser",
+      "Local workspace references for up to 20 customers"
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to generate a customer-specific SaaS DPA",
+    "description": "Prepare processing facts for one B2B customer, generate the draft, review each clause, then copy or print the result.",
+    "inLanguage": "en",
+    "step": [
+      {
+        "@type": "HowToStep",
+        "position": 1,
+        "name": "Prepare the parties",
+        "text": "Prepare the legal names and addresses of your customer (controller) and your company (processor)."
+      },
+      {
+        "@type": "HowToStep",
+        "position": 2,
+        "name": "Describe the processing",
+        "text": "Describe the processing: service summary, purposes, personal data categories and data subject categories."
+      },
+      {
+        "@type": "HowToStep",
+        "position": 3,
+        "name": "Configure sub-processors",
+        "text": "Configure sub-processors: no sub-processors, general written authorization, or specific authorization, plus the notice period."
+      },
+      {
+        "@type": "HowToStep",
+        "position": 4,
+        "name": "Choose the transfer path",
+        "text": "Choose the transfer path: EEA only, or outside the EEA with SCCs if you have already decided to use the EU Standard Contractual Clauses."
+      },
+      {
+        "@type": "HowToStep",
+        "position": 5,
+        "name": "Select security and termination terms",
+        "text": "Select security measures, breach notification hours, and what happens to data after termination (delete, return, or controller choice)."
+      },
+      {
+        "@type": "HowToStep",
+        "position": 6,
+        "name": "Generate and review",
+        "text": "Generate the draft and review each clause. Confirm the clauses that fit, or apply a server-generated alternative with a short reason tag."
+      },
+      {
+        "@type": "HowToStep",
+        "position": 7,
+        "name": "Copy or print",
+        "text": "Copy the full draft to your clipboard or print it with your browser, then send it to your customer for review and signature."
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "inLanguage": "en",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Do I need a DPA with my SaaS customers?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "If you process personal data on behalf of a business customer, GDPR Article 28 requires a written contract that sets out the processing instructions, duration, nature and purpose. The customer is usually the controller and your SaaS is the processor. This tool produces a starting draft of that contract for one customer at a time."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How is a DPA different from a privacy policy?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A privacy policy explains to end users what data you collect and why. A DPA is a contract between your company and a business customer that governs how you process data on that customer's behalf. A privacy policy does not replace the Article 28 contract."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which transfer option should I choose?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Choose EEA only when no personal data leaves the European Economic Area. Choose outside the EEA with SCCs only if you have already decided to use the EU Standard Contractual Clauses. The generator adds a linking clause for that path. It does not select SCC modules or assess whether a transfer is lawful, so consult qualified counsel for other transfer situations."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What if I use sub-processors?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Select general written authorization or specific authorization and list up to 10 sub-processors. The draft adds the matching authorization and notice terms. Review the list before you send the draft, because the agreement must reflect your real vendors."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What should I do after generating the draft?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Review every clause against your actual service, apply alternatives where they fit better, then copy or print the draft. Send it to the customer for review and signature. This tool does not sign, send or track agreements."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Where is my data stored?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Form values are sent to the generation service only to produce the draft. Your browser can keep a local workspace record with a customer reference, processing presets and result metadata; party names, addresses, email addresses and document text are not saved in local history. Analytics events, if you accept them, contain counts and timings, not company names or draft text."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is this generator free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "All generator features are free in this MVP. There is no account, no payment step and no locked section."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does this tool provide legal advice?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. This tool generates a starting draft for review. It does not provide legal advice or guarantee GDPR compliance. Have qualified counsel review the agreement before signature."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-hidden="true">DPA</span>
+        <span>GDPR DPA Generator for SaaS</span>
+      </a>
+      <nav class="site-nav" aria-label="Main">
+        <ul>
+          <li><a href="#generator">Generator</a></li>
+          <li><a href="#how-it-works">How it works</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="gdpr-dpa-saas-privacy.html">Privacy</a></li>
+          <li><a href="gdpr-dpa-saas-terms.html">Terms</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <p class="eyebrow">SaaS processor · EU B2B customers</p>
+          <h1>GDPR DPA Generator for SaaS</h1>
+          <p class="lede">Draft a customer-specific Article 28 data processing agreement in minutes. You are the processor; each of your EU B2B customers is the controller. The generator selects clauses on the server from the facts you enter, then you review the draft clause by clause.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#generator">Start a customer draft</a>
+            <a class="btn btn-secondary" href="#how-it-works">See how it works</a>
+          </div>
+          <p class="free-badge">All generator features are free in this MVP.</p>
+        </div>
+        <aside class="scope-card" aria-labelledby="scope-title">
+          <h2 id="scope-title">Built for this scope</h2>
+          <ul>
+            <li>Your company is the processor.</li>
+            <li>Each customer is a controller in the EU or EEA.</li>
+            <li>One draft per customer, up to 20 local workspace references.</li>
+            <li>Up to 10 sub-processors per customer draft.</li>
+            <li>English draft text, ready for your counsel to review.</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <div class="container">
+      <p class="legal-notice"><strong>Draft, not legal advice.</strong> This tool generates a starting draft for review. It does not provide legal advice or guarantee GDPR compliance. Have qualified counsel review the agreement before signature.</p>
+    </div>
+
+    <section class="workspace" id="generator" aria-labelledby="generator-title">
+      <div class="container">
+        <h2 class="visually-hidden" id="generator-title">Customer DPA workspace</h2>
+        <div class="workspace-grid">
+
+          <form class="dpa-form" id="dpa-form" novalidate>
+            <fieldset class="field-group">
+              <legend>1 · Your customer (controller)</legend>
+              <p class="group-hint">The EU or EEA business that buys your SaaS. Fields marked * are required.</p>
+              <div class="group-body">
+                <div class="field">
+                  <label class="field-label" for="controller-legal-name" id="controller-legal-name-label">Customer legal name <span class="req" aria-hidden="true">*</span></label>
+                  <input type="text" id="controller-legal-name" name="controller_legal_name" maxlength="160" autocomplete="organization" required aria-required="true" aria-describedby="err-controller-legal-name">
+                  <p class="field-error" id="err-controller-legal-name" hidden></p>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="controller-address">Customer address <span class="req" aria-hidden="true">*</span></label>
+                  <input type="text" id="controller-address" name="controller_address" maxlength="300" autocomplete="street-address" required aria-required="true" aria-describedby="err-controller-address">
+                  <p class="field-error" id="err-controller-address" hidden></p>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="controller-country">Customer country <span class="req" aria-hidden="true">*</span></label>
+                  <div class="select" data-select>
+                    <select id="controller-country" name="controller_country" required aria-required="true" aria-describedby="err-controller-country">
+                      <option value="">Select a country</option>
+                      <option value="DE">Germany</option>
+                      <option value="FR">France</option>
+                      <option value="NL">Netherlands</option>
+                      <option value="IE">Ireland</option>
+                      <option value="ES">Spain</option>
+                      <option value="IT">Italy</option>
+                      <option value="BE">Belgium</option>
+                      <option value="AT">Austria</option>
+                      <option value="PL">Poland</option>
+                      <option value="SE">Sweden</option>
+                      <option value="DK">Denmark</option>
+                      <option value="FI">Finland</option>
+                      <option value="PT">Portugal</option>
+                      <option value="CZ">Czechia</option>
+                      <option value="EEA_OTHER">Other EEA country</option>
+                      <option value="GB">United Kingdom</option>
+                      <option value="US">United States</option>
+                      <option value="CA">Canada</option>
+                      <option value="CH">Switzerland</option>
+                      <option value="OTHER">Other country</option>
+                    </select>
+                  </div>
+                  <p class="field-error" id="err-controller-country" hidden></p>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="controller-contact-email">Customer contact email (optional)</label>
+                  <input type="email" id="controller-contact-email" name="controller_contact_email" maxlength="160" autocomplete="email" inputmode="email" aria-describedby="hint-controller-email err-controller-contact-email">
+                  <p class="field-hint" id="hint-controller-email">Used only to address the draft. Never included in analytics or local history.</p>
+                  <p class="field-error" id="err-controller-contact-email" hidden></p>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="field-group">
+              <legend>2 · Your company (processor)</legend>
+              <p class="group-hint">The SaaS provider that processes data on the customer’s behalf.</p>
+              <div class="group-body">
+                <div class="field">
+                  <label class="field-label" for="processor-legal-name">Your legal name <span class="req" aria-hidden="true">*</span></label>
+                  <input type="text" id="processor-legal-name" name="processor_legal_name" maxlength="160" autocomplete="organization" required aria-required="true" aria-describedby="err-processor-legal-name">
+                  <p class="field-error" id="err-processor-legal-name" hidden></p>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="processor-address">Your address <span class="req" aria-hidden="true">*</span></label>
+                  <input type="text" id="processor-address" name="processor_address" maxlength="300" autocomplete="street-address" required aria-required="true" aria-describedby="err-processor-address">
+                  <p class="field-error" id="err-processor-address" hidden></p>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="processor-country">Your country <span class="req" aria-hidden="true">*</span></label>
+                  <div class="select" data-select>
+                    <select id="processor-country" name="processor_country" required aria-required="true" aria-describedby="err-processor-country">
+                      <option value="">Select a country</option>
+                      <option value="DE">Germany</option>
+                      <option value="FR">France</option>
+                      <option value="NL">Netherlands</option>
+                      <option value="IE">Ireland</option>
+                      <option value="ES">Spain</option>
+                      <option value="IT">Italy</option>
+                      <option value="BE">Belgium</option>
+                      <option value="AT">Austria</option>
+                      <option value="PL">Poland</option>
+                      <option value="SE">Sweden</option>
+                      <option value="DK">Denmark</option>
+                      <option value="FI">Finland</option>
+                      <option value="PT">Portugal</option>
+                      <option value="CZ">Czechia</option>
+                      <option value="EEA_OTHER">Other EEA country</option>
+                      <option value="GB">United Kingdom</option>
+                      <option value="US">United States</option>
+                      <option value="CA">Canada</option>
+                      <option value="CH">Switzerland</option>
+                      <option value="OTHER">Other country</option>
+                    </select>
+                  </div>
+                  <p class="field-error" id="err-processor-country" hidden></p>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="processor-contact-email">Your contact email (optional)</label>
+                  <input type="email" id="processor-contact-email" name="processor_contact_email" maxlength="160" autocomplete="email" inputmode="email" aria-describedby="hint-processor-email err-processor-contact-email">
+                  <p class="field-hint" id="hint-processor-email">Shown as the privacy contact in the draft.</p>
+                  <p class="field-error" id="err-processor-contact-email" hidden></p>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="field-group">
+              <legend>3 · Processing details</legend>
+              <p class="group-hint">Describe the service and the categories of data involved. Do not enter customer records or any real personal data.</p>
+              <div class="group-body">
+                <div class="field">
+                  <label class="field-label" for="service-summary">Service summary <span class="req" aria-hidden="true">*</span></label>
+                  <textarea id="service-summary" name="service_summary" maxlength="500" required aria-required="true" aria-describedby="hint-service-summary err-service-summary" placeholder="Hosted customer support workspace for B2B teams."></textarea>
+                  <p class="field-hint" id="hint-service-summary">One or two sentences, up to 500 characters. This becomes the subject matter of the processing.</p>
+                  <p class="field-error" id="err-service-summary" hidden></p>
+                </div>
+                <div class="field" role="group" aria-labelledby="purposes-label" aria-describedby="err-purposes">
+                  <p class="field-label" id="purposes-label">Processing purposes <span class="req" aria-hidden="true">*</span></p>
+                  <div class="option-grid">
+                    <label class="option"><input type="checkbox" name="purposes" value="hosted_application"> Hosted application</label>
+                    <label class="option"><input type="checkbox" name="purposes" value="customer_support"> Customer support</label>
+                    <label class="option"><input type="checkbox" name="purposes" value="product_analytics"> Product analytics</label>
+                    <label class="option"><input type="checkbox" name="purposes" value="service_communications"> Service communications</label>
+                    <label class="option"><input type="checkbox" name="purposes" value="billing"> Billing and account management</label>
+                  </div>
+                  <p class="field-error" id="err-purposes" hidden></p>
+                </div>
+                <div class="field" role="group" aria-labelledby="data-categories-label" aria-describedby="err-data-categories">
+                  <p class="field-label" id="data-categories-label">Categories of personal data <span class="req" aria-hidden="true">*</span></p>
+                  <div class="option-grid">
+                    <label class="option"><input type="checkbox" name="data_categories" value="account_identifiers"> Account identifiers</label>
+                    <label class="option"><input type="checkbox" name="data_categories" value="contact_details"> Business contact details</label>
+                    <label class="option"><input type="checkbox" name="data_categories" value="usage_metadata"> Usage metadata</label>
+                    <label class="option"><input type="checkbox" name="data_categories" value="support_content"> Support ticket content</label>
+                    <label class="option"><input type="checkbox" name="data_categories" value="billing_records"> Billing records</label>
+                  </div>
+                  <p class="field-error" id="err-data-categories" hidden></p>
+                </div>
+                <div class="field" role="group" aria-labelledby="data-subjects-label" aria-describedby="err-data-subject-categories">
+                  <p class="field-label" id="data-subjects-label">Categories of data subjects <span class="req" aria-hidden="true">*</span></p>
+                  <div class="option-grid">
+                    <label class="option"><input type="checkbox" name="data_subject_categories" value="customer_personnel"> Customer personnel</label>
+                    <label class="option"><input type="checkbox" name="data_subject_categories" value="end_users"> Customer end users</label>
+                    <label class="option"><input type="checkbox" name="data_subject_categories" value="prospects"> Prospects</label>
+                  </div>
+                  <p class="field-error" id="err-data-subject-categories" hidden></p>
+                </div>
+                <div class="field" role="radiogroup" aria-labelledby="special-category-label" aria-describedby="err-special-category-data">
+                  <p class="field-label" id="special-category-label">Does the processing involve special categories of personal data? <span class="req" aria-hidden="true">*</span></p>
+                  <div class="segmented">
+                    <label><input type="radio" name="special_category_data" value="false" checked> <span>No</span></label>
+                    <label><input type="radio" name="special_category_data" value="true"> <span>Yes</span></label>
+                  </div>
+                  <p class="inline-alert" id="special-category-alert" hidden>Special categories require enhanced review. The draft is flagged, but this tool does not assess the legal basis. Do not enter any actual personal data.</p>
+                  <p class="field-error" id="err-special-category-data" hidden></p>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="duration">Processing duration <span class="req" aria-hidden="true">*</span></label>
+                  <div class="select" data-select>
+                    <select id="duration" name="duration" required aria-required="true" aria-describedby="err-duration">
+                      <option value="service_term" selected>For the duration of the service agreement</option>
+                      <option value="twelve_months">12 months</option>
+                      <option value="twenty_four_months">24 months</option>
+                      <option value="project_term">Project term</option>
+                    </select>
+                  </div>
+                  <p class="field-error" id="err-duration" hidden></p>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="field-group">
+              <legend>4 · Sub-processors</legend>
+              <p class="group-hint">List the vendors that process personal data for this customer. Up to 10 entries.</p>
+              <div class="group-body">
+                <div class="field" role="radiogroup" aria-labelledby="subprocessor-authorization-label">
+                  <p class="field-label" id="subprocessor-authorization-label">Authorization model <span class="req" aria-hidden="true">*</span></p>
+                  <div class="segmented">
+                    <label><input type="radio" name="subprocessor_authorization" value="none"> <span>None</span></label>
+                    <label><input type="radio" name="subprocessor_authorization" value="general" checked> <span>General written</span></label>
+                    <label><input type="radio" name="subprocessor_authorization" value="specific"> <span>Specific</span></label>
+                  </div>
+                  <p class="field-hint">General authorization requires notice before changes. Specific authorization is tied to the listed vendors.</p>
+                </div>
+
+                <div id="subprocessor-items-block">
+                  <div class="field">
+                    <label class="field-label" for="notice-days">Change notice period (days) <span class="req" aria-hidden="true">*</span></label>
+                    <input type="number" id="notice-days" name="notice_days" min="1" max="365" step="1" value="30" inputmode="numeric" aria-describedby="hint-notice-days err-notice-days">
+                    <p class="field-hint" id="hint-notice-days">How much notice you give before adding or replacing a sub-processor.</p>
+                    <p class="field-error" id="err-notice-days" hidden></p>
+                  </div>
+
+                  <div class="field">
+                    <p class="field-label">Sub-processor list</p>
+                    <div class="repeater">
+                      <div class="repeater-head" aria-hidden="true">
+                        <span>Legal name</span>
+                        <span>Country</span>
+                        <span>Service category</span>
+                        <span></span>
+                      </div>
+                      <div id="subprocessor-rows"></div>
+                    </div>
+                    <div class="repeater-actions">
+                      <button type="button" class="btn btn-secondary" id="add-subprocessor">Add sub-processor</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="field-group">
+              <legend>5 · International transfers</legend>
+              <p class="group-hint">One mutual option drives both the transfer region and the mechanism, so the pairing cannot conflict.</p>
+              <div class="group-body">
+                <div class="field" role="radiogroup" aria-labelledby="transfer-mode-label">
+                  <p class="field-label" id="transfer-mode-label">Transfer path <span class="req" aria-hidden="true">*</span></p>
+                  <div class="segmented">
+                    <label><input type="radio" name="transfer_mode" value="eea_only" checked> <span>EEA only</span></label>
+                    <label><input type="radio" name="transfer_mode" value="third_country_scc"> <span>Outside the EEA with SCCs</span></label>
+                  </div>
+                  <p class="field-hint" id="transfer-note-eea">No personal data leaves the European Economic Area in this draft.</p>
+                  <p class="field-hint" id="transfer-note-scc" hidden>Choose this only if you have already decided to use the EU Standard Contractual Clauses. The draft adds a linking clause; it does not select SCC modules or assess transfer risk.</p>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="field-group">
+              <legend>6 · Security and termination</legend>
+              <p class="group-hint">Describe measures you actually apply. The security annex must reflect real practice, not marketing claims.</p>
+              <div class="group-body">
+                <div class="field" role="group" aria-labelledby="security-measures-label" aria-describedby="err-security-measures">
+                  <p class="field-label" id="security-measures-label">Security measures <span class="req" aria-hidden="true">*</span></p>
+                  <div class="option-grid">
+                    <label class="option"><input type="checkbox" name="security_measures" value="encryption_in_transit"> Encryption in transit</label>
+                    <label class="option"><input type="checkbox" name="security_measures" value="encryption_at_rest"> Encryption at rest</label>
+                    <label class="option"><input type="checkbox" name="security_measures" value="access_control"> Access control</label>
+                    <label class="option"><input type="checkbox" name="security_measures" value="audit_logs"> Audit logs</label>
+                    <label class="option"><input type="checkbox" name="security_measures" value="backups"> Backups</label>
+                    <label class="option"><input type="checkbox" name="security_measures" value="incident_response"> Incident response</label>
+                    <label class="option"><input type="checkbox" name="security_measures" value="staff_training"> Staff training</label>
+                  </div>
+                  <p class="field-error" id="err-security-measures" hidden></p>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="breach-hours">Breach notification window <span class="req" aria-hidden="true">*</span></label>
+                  <div class="select" data-select>
+                    <select id="breach-hours" name="breach_notice_hours" required aria-required="true" aria-describedby="err-breach-hours">
+                      <option value="24" selected>Within 24 hours</option>
+                      <option value="48">Within 48 hours</option>
+                      <option value="72">Within 72 hours</option>
+                    </select>
+                  </div>
+                  <p class="field-error" id="err-breach-hours" hidden></p>
+                </div>
+                <div class="field" role="radiogroup" aria-labelledby="termination-disposition-label">
+                  <p class="field-label" id="termination-disposition-label">Data after termination <span class="req" aria-hidden="true">*</span></p>
+                  <div class="segmented">
+                    <label><input type="radio" name="termination_data_disposition" value="controller_choice" checked> <span>Controller choice</span></label>
+                    <label><input type="radio" name="termination_data_disposition" value="delete"> <span>Delete</span></label>
+                    <label><input type="radio" name="termination_data_disposition" value="return"> <span>Return</span></label>
+                  </div>
+                  <p class="field-hint">Controller choice keeps the customer’s option to request deletion or return, subject to legal retention duties.</p>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="completion-days">Completion period (days) <span class="req" aria-hidden="true">*</span></label>
+                  <input type="number" id="completion-days" name="termination_completion_days" min="1" max="365" step="1" value="30" inputmode="numeric" aria-describedby="hint-completion-days err-completion-days">
+                  <p class="field-hint" id="hint-completion-days">Days allowed to delete or return data after termination.</p>
+                  <p class="field-error" id="err-completion-days" hidden></p>
+                </div>
+              </div>
+            </fieldset>
+
+            <div class="submit-bar">
+              <button type="submit" class="btn btn-primary" id="generate-button">Generate DPA draft</button>
+              <button type="reset" class="btn btn-secondary">Reset form</button>
+            </div>
+          </form>
+
+          <aside class="workspace-side" aria-label="Customer workspace">
+            <div class="side-card">
+              <h2>Customer workspace</h2>
+              <p class="field-hint">Pick a local reference so you can reuse processing presets for this customer.</p>
+              <div class="field">
+                <label class="field-label" for="customer-ref">Customer reference</label>
+                <div class="select" data-select>
+                  <select id="customer-ref" name="customer_ref">
+                    <option value="C01" selected>C01 — New workspace</option>
+                    <option value="C02">C02</option>
+                    <option value="C03">C03</option>
+                    <option value="C04">C04</option>
+                    <option value="C05">C05</option>
+                    <option value="C06">C06</option>
+                    <option value="C07">C07</option>
+                    <option value="C08">C08</option>
+                    <option value="C09">C09</option>
+                    <option value="C10">C10</option>
+                    <option value="C11">C11</option>
+                    <option value="C12">C12</option>
+                    <option value="C13">C13</option>
+                    <option value="C14">C14</option>
+                    <option value="C15">C15</option>
+                    <option value="C16">C16</option>
+                    <option value="C17">C17</option>
+                    <option value="C18">C18</option>
+                    <option value="C19">C19</option>
+                    <option value="C20">C20</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="side-card" id="history-panel">
+              <h2>Recent workspaces</h2>
+              <ul class="history-list" id="history-list"></ul>
+              <p class="history-empty" id="history-empty">No saved drafts yet. Drafts saved in this browser will appear here.</p>
+              <p class="history-foot">Party details and document text are not stored in local history.</p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <div class="container">
+      <div class="status-region" id="request-status" role="status" aria-live="polite" aria-atomic="true" data-state="idle">
+        <p class="status-text" data-status-text>No draft generated yet.</p>
+      </div>
+    </div>
+
+    <section class="container" aria-labelledby="result-region-title">
+      <div class="result-region" id="result-region" hidden>
+        <div class="result-head">
+          <div>
+            <p class="eyebrow">Draft status</p>
+            <h2 id="result-region-title" tabindex="-1">Draft generated</h2>
+            <p class="muted" id="result-summary-text" aria-live="polite" aria-atomic="true"></p>
+          </div>
+          <div class="result-actions">
+            <button type="button" class="btn btn-primary" id="copy-dpa">Copy full draft</button>
+            <button type="button" class="btn btn-secondary" id="print-dpa">Print draft</button>
+          </div>
+        </div>
+        <dl class="result-stats">
+          <div class="stat">
+            <dt>Clauses generated</dt>
+            <dd id="stat-clauses">—</dd>
+          </div>
+          <div class="stat">
+            <dt>Clauses to review</dt>
+            <dd id="stat-warnings">—</dd>
+          </div>
+          <div class="stat">
+            <dt>Template version</dt>
+            <dd id="stat-template">—</dd>
+          </div>
+        </dl>
+        <div class="result-body">
+          <ul class="clause-list" id="clause-list"></ul>
+        </div>
+        <div class="result-feedback" id="result-feedback" hidden>
+          <h2>Found a gap?</h2>
+          <p class="small muted">If a requirement is missing from this draft, report it separately. This entry does not depend on any generated clause.</p>
+          <button type="button" class="btn btn-secondary" id="report-missing">Report a missing requirement</button>
+          <div class="false-negative-panel" id="false-negative-panel" hidden></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="method" id="how-it-works" aria-labelledby="how-title">
+      <div class="container">
+        <div class="method-grid">
+          <div class="method-block">
+            <h2 id="how-title">How to Use</h2>
+            <ol>
+              <li>Prepare the legal names and addresses of your customer (controller) and your company (processor).</li>
+              <li>Describe the processing: service summary, purposes, personal data categories and data subject categories.</li>
+              <li>Configure sub-processors: no sub-processors, general written authorization, or specific authorization, plus the notice period.</li>
+              <li>Choose the transfer path: EEA only, or outside the EEA with SCCs if you have already decided to use the EU Standard Contractual Clauses.</li>
+              <li>Select security measures, breach notification hours, and what happens to data after termination (delete, return, or controller choice).</li>
+              <li>Generate the draft and review each clause. Confirm the clauses that fit, or apply a server-generated alternative with a short reason tag.</li>
+              <li>Copy the full draft to your clipboard or print it with your browser, then send it to your customer for review and signature.</li>
+            </ol>
+
+            <h2>Why a Customer-Specific DPA Matters for SaaS</h2>
+            <p>In a typical B2B SaaS relationship, the customer decides why and how personal data is processed, and your company processes that data to deliver the service. GDPR Article 28 requires a written contract between the controller and the processor that covers the processing instructions, duration, nature and purpose, the categories of data and data subjects, and the processor’s obligations.</p>
+            <p>A privacy policy is not that contract. It explains your own practices to end users; it does not bind you to one customer’s instructions. Copying the same generic annex into every deal also creates a quieter problem: the described data, sub-processors and security measures drift away from what the service actually does.</p>
+            <p>This tool takes the opposite approach. Each draft is generated from the facts of one customer relationship, so a hosted analytics feature, a support tool and a payment vendor can produce different clauses and a different annex. The result still needs review, but the starting point reflects the deal in front of you.</p>
+          </div>
+
+          <div class="method-block">
+            <h2>What the Generator Covers</h2>
+            <p>The generated draft follows the processor obligations in GDPR Article 28 and the usual SaaS annexes:</p>
+            <ul>
+              <li>Processing only on documented instructions, including transfer rules.</li>
+              <li>Confidentiality of personnel authorised to process data.</li>
+              <li>Security measures appropriate to the risk, in line with Article 32.</li>
+              <li>Sub-processor authorization, notice and flow-down obligations.</li>
+              <li>Assistance with data subject requests and with impact assessments.</li>
+              <li>Breach notification to the controller.</li>
+              <li>Deletion or return of data at the end of the service.</li>
+              <li>Audit and information rights for the controller.</li>
+            </ul>
+            <p>Annexes describe the parties, the processing details, the sub-processor list, the transfer path and the security measures you selected. The draft is plain text and is meant to be reviewed clause by clause.</p>
+
+            <h2>Method and Coverage Formula</h2>
+            <p>The server selects clauses and variants from the structured facts you submit. The front end does not contain an Article 28 rule library, a risk score or legal text assembly. After generation, each clause keeps a rule identifier, a rule version and a confidence value so that corrections can be connected back to the clause that produced them.</p>
+            <p>The summary reports how many applicable required clauses were generated:</p>
+            <span class="formula">coverage_ratio = generated_applicable_count / applicable_required_total</span>
+            <p>The denominator is set by the server for this fact pattern and can reach 100%. It is a template coverage indicator, not a GDPR compliance score or a legal opinion. If no required clause applies, the ratio is empty and the interface says so instead of showing 100%.</p>
+
+            <h2>International Transfers</h2>
+            <p>Two structured paths are available. “EEA only” states that no personal data leaves the European Economic Area; the SCC linking clause is not included. “Outside the EEA with SCCs” is available only when you have already decided to use the EU Standard Contractual Clauses; the draft then adds a clause that connects the DPA to that transfer mechanism.</p>
+            <p>This tool does not choose SCC modules, complete the SCC annexes, assess whether a transfer is lawful or produce a transfer impact assessment. Other transfer situations need separate legal review.</p>
+
+            <h2>Sub-processors and Security Annexes</h2>
+            <p>“No sub-processors” records that you use none. “General written authorization” lets you add or replace vendors after a notice period. “Specific authorization” ties the customer’s approval to the vendors you list. In all three cases the draft must match reality; an authorization clause cannot make an undisclosed vendor compliant.</p>
+            <p>The same rule applies to security. Select only measures you actually operate, because the annex becomes a contractual statement about encryption, access control, logging, backups, incident response and training.</p>
+          </div>
+
+          <div class="method-block">
+            <h2>A Lightweight Workflow for 3–20 Customers</h2>
+            <p>Small SaaS teams often negotiate a handful of DPAs at once. The workspace uses local references from C01 to C20. A reference stores the customer label, the processing preset and result metadata in your browser, so you can reopen a customer and see which clauses you already reviewed.</p>
+            <p>Party names, addresses, email addresses and document text are deliberately excluded from local history. When you reopen a workspace you re-enter those details and generate a fresh draft; the saved preset only spares you from re-selecting purposes, data categories, sub-processor settings and security measures.</p>
+
+            <h2>Scope and Limits</h2>
+            <p>This is a drafting aid. It does not decide whether your processing is lawful, whether a transfer mechanism applies, or whether your security measures are adequate. It does not replace qualified counsel, a data protection impact assessment, a record of processing activities, or a signing process.</p>
+            <p>The draft becomes a contract only when the parties review and sign it. Nothing on this page creates a binding agreement, records acceptance, or verifies a signature.</p>
+
+            <h2>Data Sources and Review</h2>
+            <p>The clause structure follows GDPR Article 28 and Article 32. The primary legal source is the official GDPR text published by the European Union. The template version shown in a generated draft comes from the server response; this page does not claim an automatic legal update or an unreviewed endorsement.</p>
+            <p>Because the legal text and the generated draft both need human review, treat the output as a working document for your counsel, not as finished advice.</p>
+
+            <div class="quote-block">
+              <p><strong>Reference note.</strong> Coverage is a template metric, not a compliance guarantee. Verified against the official GDPR text at <a href="https://eur-lex.europa.eu/eli/reg/2016/679/oj" rel="noopener noreferrer" target="_blank">EUR-Lex</a>. Template version and generation time are reported by the server for each draft.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="faq" id="faq" aria-labelledby="faq-title">
+      <div class="container faq-inner">
+        <h2 id="faq-title">Frequently asked questions</h2>
+        <p class="muted">Short answers about the draft, the transfer options and local storage.</p>
+        <div class="faq-list">
+          <details>
+            <summary>Do I need a DPA with my SaaS customers?</summary>
+            <div class="faq-answer"><div class="faq-answer-inner">
+              <p>If you process personal data on behalf of a business customer, GDPR Article 28 requires a written contract that sets out the processing instructions, duration, nature and purpose. The customer is usually the controller and your SaaS is the processor. This tool produces a starting draft of that contract for one customer at a time.</p>
+            </div></div>
+          </details>
+          <details>
+            <summary>How is a DPA different from a privacy policy?</summary>
+            <div class="faq-answer"><div class="faq-answer-inner">
+              <p>A privacy policy explains to end users what data you collect and why. A DPA is a contract between your company and a business customer that governs how you process data on that customer's behalf. A privacy policy does not replace the Article 28 contract.</p>
+            </div></div>
+          </details>
+          <details>
+            <summary>Which transfer option should I choose?</summary>
+            <div class="faq-answer"><div class="faq-answer-inner">
+              <p>Choose EEA only when no personal data leaves the European Economic Area. Choose outside the EEA with SCCs only if you have already decided to use the EU Standard Contractual Clauses. The generator adds a linking clause for that path. It does not select SCC modules or assess whether a transfer is lawful, so consult qualified counsel for other transfer situations.</p>
+            </div></div>
+          </details>
+          <details>
+            <summary>What if I use sub-processors?</summary>
+            <div class="faq-answer"><div class="faq-answer-inner">
+              <p>Select general written authorization or specific authorization and list up to 10 sub-processors. The draft adds the matching authorization and notice terms. Review the list before you send the draft, because the agreement must reflect your real vendors.</p>
+            </div></div>
+          </details>
+          <details>
+            <summary>What should I do after generating the draft?</summary>
+            <div class="faq-answer"><div class="faq-answer-inner">
+              <p>Review every clause against your actual service, apply alternatives where they fit better, then copy or print the draft. Send it to the customer for review and signature. This tool does not sign, send or track agreements.</p>
+            </div></div>
+          </details>
+          <details>
+            <summary>Where is my data stored?</summary>
+            <div class="faq-answer"><div class="faq-answer-inner">
+              <p>Form values are sent to the generation service only to produce the draft. Your browser can keep a local workspace record with a customer reference, processing presets and result metadata; party names, addresses, email addresses and document text are not saved in local history. Analytics events, if you accept them, contain counts and timings, not company names or draft text.</p>
+            </div></div>
+          </details>
+          <details>
+            <summary>Is this generator free?</summary>
+            <div class="faq-answer"><div class="faq-answer-inner">
+              <p>All generator features are free in this MVP. There is no account, no payment step and no locked section.</p>
+            </div></div>
+          </details>
+          <details>
+            <summary>Does this tool provide legal advice?</summary>
+            <div class="faq-answer"><div class="faq-answer-inner">
+              <p>No. This tool generates a starting draft for review. It does not provide legal advice or guarantee GDPR compliance. Have qualified counsel review the agreement before signature.</p>
+            </div></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <div class="container">
+      <div class="consent-region" id="consent-region" role="region" aria-label="Analytics consent" hidden>
+        <p>We would like to collect anonymous usage events to understand how the generator is used. You can reject analytics and still use every feature. Read the <a href="gdpr-dpa-saas-privacy.html">privacy policy</a>.</p>
+        <div class="consent-actions">
+          <button type="button" class="btn btn-primary" id="consent-accept">Accept analytics</button>
+          <button type="button" class="btn btn-secondary" id="consent-reject">Reject analytics</button>
+        </div>
+      </div>
+
+      <div class="subscription-cta" id="subscription-cta" hidden></div>
+      <div class="paywall-overlay" id="paywall-overlay" hidden></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h2>GDPR DPA Generator for SaaS</h2>
+          <p class="small muted">A free drafting tool for SaaS companies acting as a processor. It generates a starting draft for review and does not provide legal advice.</p>
+        </div>
+        <div>
+          <h2>Pages</h2>
+          <ul>
+            <li><a href="index.html">Generator</a></li>
+            <li><a href="gdpr-dpa-saas-privacy.html">Privacy policy</a></li>
+            <li><a href="gdpr-dpa-saas-terms.html">Terms of use</a></li>
+          </ul>
+        </div>
+      </div>
+      <p class="footer-meta">All generator features are free in this MVP. Draft text must be reviewed by qualified counsel before signature.</p>
+    </div>
+  </footer>
+
+  <div class="toast-region" id="toast-region" role="status" aria-live="polite"></div>
+
+  <template id="subprocessor-row-template">
+    <div class="repeater-row">
+      <div class="field">
+        <label class="field-label visually-hidden" for="sp-name">Sub-processor legal name</label>
+        <input type="text" id="sp-name" name="subprocessor_name" maxlength="160" placeholder="Vendor legal name" aria-describedby="err-sp-name">
+        <p class="field-error" id="err-sp-name" hidden></p>
+      </div>
+      <div class="field">
+        <label class="field-label visually-hidden" for="sp-country">Sub-processor country</label>
+        <div class="select" data-select>
+          <select id="sp-country" name="subprocessor_country" aria-describedby="err-sp-country">
+            <option value="">Country</option>
+            <option value="DE">Germany</option>
+            <option value="FR">France</option>
+            <option value="NL">Netherlands</option>
+            <option value="IE">Ireland</option>
+            <option value="ES">Spain</option>
+            <option value="IT">Italy</option>
+            <option value="BE">Belgium</option>
+            <option value="AT">Austria</option>
+            <option value="PL">Poland</option>
+            <option value="SE">Sweden</option>
+            <option value="DK">Denmark</option>
+            <option value="FI">Finland</option>
+            <option value="PT">Portugal</option>
+            <option value="EEA_OTHER">Other EEA</option>
+            <option value="GB">United Kingdom</option>
+            <option value="US">United States</option>
+            <option value="CA">Canada</option>
+            <option value="CH">Switzerland</option>
+            <option value="OTHER">Other country</option>
+          </select>
+        </div>
+        <p class="field-error" id="err-sp-country" hidden></p>
+      </div>
+      <div class="field">
+        <label class="field-label visually-hidden" for="sp-category">Sub-processor service category</label>
+        <div class="select" data-select>
+          <select id="sp-category" name="subprocessor_service_category" aria-describedby="err-sp-category">
+            <option value="">Service category</option>
+            <option value="cloud_hosting">Cloud hosting</option>
+            <option value="analytics">Analytics</option>
+            <option value="email_delivery">Email delivery</option>
+            <option value="support_tools">Support tools</option>
+            <option value="payment_processing">Payment processing</option>
+            <option value="monitoring">Monitoring</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <p class="field-error" id="err-sp-category" hidden></p>
+      </div>
+      <button type="button" class="icon-button" data-action="remove-subprocessor" aria-label="Remove sub-processor" title="Remove sub-processor">×</button>
+    </div>
+  </template>
+</body>
+</html>

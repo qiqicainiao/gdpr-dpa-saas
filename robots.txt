@@ -1,0 +1,25 @@
+User-agent: GPTBot
+Allow: /
+Disallow: /bff/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /bff/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /bff/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /bff/
+
+User-agent: Bingbot
+Allow: /
+Disallow: /bff/
+
+User-agent: *
+Allow: /
+Disallow: /bff/
+
+Sitemap: https://saasdpalab.com/sitemap.xml

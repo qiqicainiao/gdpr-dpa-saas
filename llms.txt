@@ -1,0 +1,49 @@
+# GDPR DPA Generator for SaaS
+
+> A free browser tool for SaaS companies acting as a processor. It generates a customer-specific GDPR Article 28 data processing agreement draft for EU or EEA business customers, then lets you review, correct, copy and print it.
+
+## What it does
+
+- Generates one processor-side DPA draft per customer from structured processing facts.
+- Selects clauses on the server for Article 28 processor obligations, processing details, sub-processors, transfers, security, breach notice, termination, audit and assistance.
+- Offers server-generated alternative clauses for review, with a short reason tag when you apply one.
+- Copies the full reviewed draft to the clipboard and prints it with the browser.
+- Keeps local workspace references for up to 20 customers, storing processing presets and result metadata without party details or document text.
+- Supports two transfer paths: EEA only, or outside the EEA with the EU Standard Contractual Clauses already chosen by the user.
+
+## How it works
+
+1. Enter the legal names and addresses of the customer (controller) and the SaaS provider (processor).
+2. Describe the service, processing purposes, personal data categories and data subject categories.
+3. Choose the sub-processor authorization model and list up to 10 sub-processors.
+4. Choose the transfer path.
+5. Select security measures, breach notification hours and termination handling.
+6. Generate the draft, review each clause, and apply alternatives where they fit.
+7. Copy or print the draft for review and signature.
+
+## Coverage formula
+
+`coverage_ratio = generated_applicable_count / applicable_required_total`
+
+The denominator is set by the server for the submitted fact pattern. The ratio is a template coverage indicator, not a GDPR compliance score or a legal opinion.
+
+## Scope and limits
+
+- The output is a starting draft for review. It is not legal advice and does not guarantee GDPR compliance.
+- The tool does not sign, send or track agreements, and does not record customer acceptance.
+- The tool does not select SCC modules or produce a transfer impact assessment.
+- Review by qualified counsel is required before signature.
+- All generator features are free in this MVP.
+
+## Pages
+
+- [Home](https://saasdpalab.com/)
+- [Privacy Policy](https://saasdpalab.com/gdpr-dpa-saas-privacy.html)
+- [Terms of Use](https://saasdpalab.com/gdpr-dpa-saas-terms.html)
+
+## Primary source
+
+- [EU GDPR, Regulation (EU) 2016/679](https://eur-lex.europa.eu/eli/reg/2016/679/oj)
+
+## Contact
+Privacy and terms questions: apj56423@gmail.com
