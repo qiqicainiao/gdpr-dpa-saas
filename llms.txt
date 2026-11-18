@@ -38,8 +38,8 @@ The denominator is set by the server for the submitted fact pattern. The ratio i
 ## Pages
 
 - [Home](https://saasdpalab.com/)
-- [Privacy Policy](https://saasdpalab.com/gdpr-dpa-saas-privacy.html)
-- [Terms of Use](https://saasdpalab.com/gdpr-dpa-saas-terms.html)
+- [Privacy Policy](https://saasdpalab.com/gdpr-dpa-saas-privacy)
+- [Terms of Use](https://saasdpalab.com/gdpr-dpa-saas-terms)
 
 ## Primary source
 
