@@ -17,7 +17,7 @@ import {
   createEntry
 } from './assets/js/history.js?v=0.3.2';
 import { renderHistoryPanel } from './assets/js/history-panel.js?v=0.3.2';
-import { initConsent } from './assets/js/consent.js?v=0.3.2';
+import { initConsent } from './assets/js/consent.js?v=0.3.3';
 import { initCorrection, mountCorrections } from './assets/js/correction.js?v=0.3.2';
 
 const config = window.__SITE_CONFIG__;
