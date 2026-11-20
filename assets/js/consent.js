@@ -11,18 +11,9 @@ export function initConsent() {
     return;
   }
 
-  let revealed = false;
-
-  function reveal() {
-    if (revealed) return;
-    revealed = true;
-    region.hidden = false;
-    document.removeEventListener('pointerdown', reveal);
-    document.removeEventListener('keydown', reveal);
-  }
-
-  document.addEventListener('pointerdown', reveal, { passive: true });
-  document.addEventListener('keydown', reveal);
+  // 2026-11-20 修：此前要等 pointerdown/keydown 才 reveal 横幅，
+  // 结果"打开看一眼就走"的访客永远没有表态机会，pv_real 结构性偏低。首屏直接问。
+  region.hidden = false;
 
   accept.addEventListener('click', function () {
     telemetry.setConsent(true);
