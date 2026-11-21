@@ -185,13 +185,20 @@
         if (typeof orig !== 'function') { return; }
         global.history[name] = function () {
           var ret = orig.apply(this, arguments);
-          try { flushVitals(nowPath()); } catch (e) { /* noop */ }
+          try {
+            // 只在 path 真的变了才结账；否则每次 pushState 都会把累积量清零
+            var np = nowPath();
+            if (vitals.path && np !== vitals.path) { flushVitals(np); }
+          } catch (e) { /* noop */ }
           return ret;
         };
       };
       wrap('pushState');
       wrap('replaceState');
-      global.addEventListener('popstate', function () { flushVitals(nowPath()); });
+      global.addEventListener('popstate', function () {
+        var np = nowPath();
+        if (vitals.path && np !== vitals.path) { flushVitals(np); }
+      });
     } catch (e) { /* noop */ }
   }
 
