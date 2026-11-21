@@ -127,13 +127,36 @@
     consent_changed: { consent: 'b' },
     paywall_exposed: { trigger_source: 's32', plan: 'enum:free' },
     paywall_clicked: { trigger_source: 's32', plan: 'enum:free' },
-    plan_activated: { plan: 'enum:free' }
+    plan_activated: { plan: 'enum:free' },
+
+    /* P0 补充采集（2026-11-21）：字段名与服务端 manifest 的 spec 逐字一致。
+       本 SDK 对未注册事件直接 return 丢，不注册等于白接。 */
+    page_vitals: {
+      page_path: 's512',
+      nav_type: 'enum:navigate|reload|back_forward|prerender',
+      fcp_ms: 'i', lcp_ms: 'i', cls_x1000: 'i', inp_ms: 'i', ttfb_ms: 'i'
+    },
+    js_error: {
+      error_type: 'enum:error|unhandledrejection',
+      script: 's80',
+      line: 'i',
+      col: 'i'
+    },
+    utm_capture: {
+      page_path: 's512',
+      utm_source: 's40', utm_medium: 's40', utm_campaign: 's40',
+      utm_term: 's40', utm_content: 's40'
+    }
   };
 
   var queue = [];
   var dropped = 0;
   var sending = false;
   var consent = readConsent();
+  /* telemetry-extras.js（page_vitals / js_error / utm_capture）按 __VR_CONSENT__ 做
+     fail-closed 门控；result-feedback.js 同源同判据。这个全局量必须由本站写，
+     否则补充采集永远认为"未同意"，一条都不发。 */
+  window.__VR_CONSENT__ = consent === 'granted';
   var flushTimer = null;
   var stats = { sent: 0, retried: 0, failed: 0 };
 
@@ -320,6 +343,7 @@
 
   function setConsent(granted) {
     consent = granted ? 'granted' : 'denied';
+    window.__VR_CONSENT__ = granted === true;
     try {
       window.localStorage.setItem(cfg.CONSENT_KEY, consent);
     } catch (error) {
