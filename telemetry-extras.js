@@ -39,6 +39,10 @@
   var vitalsSent = {};
   var vitals = { path: null, fcp: null, lcp: null, cls: 0, inp: null, ttfb: null, nav: null };
   var utmSent = false;
+  var utmSnapshot = null; // 落地页 URL 快照：SPA 切页后 location.search 可能被改写
+
+  // 脚本一执行就快照：等到 boot（可能是 load 之后）再读，SPA 往往已经把 query 清了。
+  try { utmSnapshot = String((global.location && global.location.search) || ''); } catch (e) { utmSnapshot = ''; }
 
   function nowPath() {
     try {
@@ -68,7 +72,7 @@
   function readUtm() {
     var out = {};
     var q = '';
-    try { q = String((global.location && global.location.search) || ''); } catch (e) { return out; }
+    try { q = String(utmSnapshot !== null ? utmSnapshot : ((global.location && global.location.search) || '')); } catch (e) { return out; }
     if (!q) { return out; }
     if (q.charAt(0) === '?') { q = q.substring(1); }
     var parts = q.split('&');
@@ -92,11 +96,27 @@
 
   function captureUtm() {
     if (utmSent) { return; }
+    // 未同意时**不置位**：置位就等于"本次会话的渠道记录权已用掉"，
+    // 用户随后点同意也补不回来（线上实测：5 个自研站 utm 全丢，就是这么丢的）。
+    if (!isGranted()) { return; }
     utmSent = true;
     var utm = readUtm();
     if (!utm.utm_source) { return; } // 没有来源键的零散参数不构成归因
     utm.page_path = nowPath();
     emit('utm_capture', utm);
+  }
+
+  /**
+   * 同意的动作必然来自一次点击/按键，所以在捕获阶段挂一个"再试一次"，
+   * 不依赖各站把 consent 变化回调告诉我们（5 站 5 种实现，接不全就会漏）。
+   * captureUtm 内部有 utmSent + isGranted 双重短路，重复触发几乎零成本。
+   */
+  function armConsentWatcher() {
+    var retry = function () { setTimeout(captureUtm, 400); };
+    try {
+      document.addEventListener('click', retry, true);
+      document.addEventListener('keydown', retry, true);
+    } catch (e) { /* noop */ }
   }
 
   // ---------------- Core Web Vitals ----------------
@@ -171,9 +191,9 @@
 
     try {
       document.addEventListener('visibilitychange', function () {
-        if (document.visibilityState === 'hidden') { flushVitals(null); }
+        if (document.visibilityState === 'hidden') { captureUtm(); flushVitals(null); }
       });
-      global.addEventListener('pagehide', function () { flushVitals(null); });
+      global.addEventListener('pagehide', function () { captureUtm(); flushVitals(null); });
     } catch (e) { /* noop */ }
   }
 
@@ -275,10 +295,15 @@
     if (!trackFn) { trackFn = discoverTrack(); }
     if (!trackFn) { return false; } // 宿主还没就绪，等 vr-track-ready
     booted = true;
+    // 落地页 URL 快照要在最早期取：SPA 首屏常把 query 清掉，之后读就是空了
+    if (utmSnapshot === null) {
+      try { utmSnapshot = String((global.location && global.location.search) || ''); } catch (e) { utmSnapshot = ''; }
+    }
     setupVitals();
     setupSpaRoute();
     setupErrors();
     captureUtm();
+    armConsentWatcher();
     return true;
   }
 
