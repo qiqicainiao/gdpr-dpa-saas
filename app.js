@@ -567,7 +567,12 @@ function handleFailure(response, checkDuration) {
     diff_detail: null,
     sample_source: 'system'
   });
-  track('tool_failed', { error_code: status });
+  // error_stage：把"失败了"细化到哪一段。这里是检查请求失败的统一出口，
+  // 按状态串粗分：超时/网络/其余算 compute——比一律 unknown 有定位价值。
+  track('tool_failed', {
+    error_code: status,
+    error_stage: /timeout/i.test(status) ? 'timeout' : (/network|fetch|offline/i.test(status) ? 'network' : 'compute')
+  });
 
   inputSource = 'retry';
 

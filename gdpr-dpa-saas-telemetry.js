@@ -8,7 +8,11 @@
     page_view: { page_path: 's512', referrer_host: 's128', device_type: 'enum:desktop|mobile|tablet' },
     tool_started: { tool_name: 's64' },
     tool_completed: { tool_name: 's64', succeeded: 'b', duration_ms: 'i' },
-    tool_failed: { error_code: 's40' },
+    tool_failed: {
+      error_code: 's40',
+      // 不在这里登记，前端传了也会被本 SDK 当未知字段丢掉（与服务端 semantic_map 是两道关）
+      error_stage: 'enum:init|input|parse|compute|render|network|timeout|unknown'
+    },
     check_started: {
       input_source: 'enum:new|history|retry',
       run_sequence: 'i',
