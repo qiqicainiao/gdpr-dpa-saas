@@ -152,7 +152,8 @@
     var p = { page_path: path, nav_type: vitals.nav || 'navigate' };
     if (vitals.fcp !== null) { p.fcp_ms = vitals.fcp; }
     if (vitals.lcp !== null) { p.lcp_ms = vitals.lcp; }
-    if (vitals.cls > 0) { p.cls_x1000 = Math.round(vitals.cls * 1000); } // 整数，避免浮点尾差
+    // CLS 累计位移分：0 是有效测量（这页很稳），不是"没值"，必须照发
+    p.cls_x1000 = Math.round(vitals.cls * 1000) || 0; // 整数，避免浮点尾差
     if (vitals.inp !== null) { p.inp_ms = vitals.inp; }
     if (vitals.ttfb !== null) { p.ttfb_ms = vitals.ttfb; }
     emit('page_vitals', p);
