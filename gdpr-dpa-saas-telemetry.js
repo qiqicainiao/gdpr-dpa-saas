@@ -353,6 +353,20 @@
     } catch (error) {
 
     }
+    if (granted) {
+      /* 同意那一刻才把会话标识落存储（P1-5） */
+      if (api.session) {
+        if (!api.session.sess_ref) api.session.sess_ref = newSessValue();
+        persistSess(api.session.sess_ref);
+      }
+    } else {
+      /* 拒绝/撤回：会话标识消失 + 未发的行为事件丢弃（P1-6）。
+         决策事实事件（consent_changed）随后由 track 重新入队，单独发最小行。 */
+      try { window.sessionStorage.removeItem(cfg.SESSION_KEY); } catch (error) { }
+      if (api.session) api.session.sess_ref = '';
+      dropped += queue.length;
+      queue = [];
+    }
     track('consent_changed', { consent: granted });
     flush();
   }
@@ -416,23 +430,31 @@
     }).join('');
   }
 
-  function sessRef() {
-    var key = cfg.SESSION_KEY;
-    try {
-      var existing = window.sessionStorage.getItem(key);
-      if (existing) return existing;
-    } catch (error) {
-
-    }
+  function newSessValue() {
     var random = hex16() + hex16();
     var salt = cfg.SALT_SECRET || cfg.SITE_ID + '@' + cfg.VERSION;
     var mixed = hash(salt + ':' + random + ':' + Date.now());
-    var value = 'gdpa-' + random.slice(0, 6) + '-' + mixed;
-    try {
-      window.sessionStorage.setItem(key, value);
-    } catch (error) {
+    return 'gdpa-' + random.slice(0, 6) + '-' + mixed;
+  }
 
+  function persistSess(value) {
+    if (!value) return;
+    try { window.sessionStorage.setItem(cfg.SESSION_KEY, value); } catch (error) { }
+  }
+
+  /* P1-5：只有已同意才读写 sessionStorage。未决态会话标识只活在内存里，
+     同意那一刻（setConsent(true)）才落盘。 */
+  function sessRef() {
+    if (consent === 'granted') {
+      try {
+        var existing = window.sessionStorage.getItem(cfg.SESSION_KEY);
+        if (existing) return existing;
+      } catch (error) {
+
+      }
     }
+    var value = newSessValue();
+    if (consent === 'granted') persistSess(value);
     return value;
   }
 
