@@ -431,10 +431,18 @@
   }
 
   function newSessValue() {
-    var random = hex16() + hex16();
-    var salt = cfg.SALT_SECRET || cfg.SITE_ID + '@' + cfg.VERSION;
-    var mixed = hash(salt + ':' + random + ':' + Date.now());
-    return 'gdpa-' + random.slice(0, 6) + '-' + mixed;
+    /* 契约：sess_ref = {site_id}:{32 位 hex}（v5 §3.2）。
+       旧版写的是 gdpa-{6hex}-{8hex}（长度 20、连站前缀都没有），
+       服务端会话级聚合会把它当成外来前缀，跨站对比直接把它排除。
+       读到旧格式的存值必须重建，否则老访客永远沿用非法值。 */
+    return cfg.SITE_ID + ':' + hex16() + hex16();
+  }
+
+  function sessValid(value) {
+    if (typeof value !== 'string') return false;
+    var prefix = cfg.SITE_ID + ':';
+    if (value.indexOf(prefix) !== 0) return false;
+    return /^[0-9a-f]{32}$/.test(value.slice(prefix.length));
   }
 
   function persistSess(value) {
@@ -448,7 +456,8 @@
     if (consent === 'granted') {
       try {
         var existing = window.sessionStorage.getItem(cfg.SESSION_KEY);
-        if (existing) return existing;
+        if (sessValid(existing)) return existing;
+        if (existing) window.sessionStorage.removeItem(cfg.SESSION_KEY); // 旧格式：清掉再重建
       } catch (error) {
 
       }
@@ -456,14 +465,6 @@
     var value = newSessValue();
     if (consent === 'granted') persistSess(value);
     return value;
-  }
-
-  function hash(text) {
-    var h = 5381;
-    for (var i = 0; i < text.length; i++) {
-      h = ((h << 5) + h + text.charCodeAt(i)) >>> 0;
-    }
-    return ('0000000' + h.toString(16)).slice(-8);
   }
 
   function detectDevice() {
