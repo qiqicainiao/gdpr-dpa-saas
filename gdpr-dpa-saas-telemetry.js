@@ -56,6 +56,10 @@
     clause_expanded: { clause_key: 's48' },
     dpa_copied: { copy_scope: 'enum:full_dpa', item_count: 'i', time_on_result_s: 'nullable' },
     print_requested: { print_scope: 'enum:full_dpa', item_count: 'i', time_on_result_s: 'nullable' },
+    /* Q3 判定口径（九站统一名）：分母 result_viewed，分子 export / result_copied。
+       dpa_copied / print_requested 保留为本站历史字段，两者同时发，互不替换。 */
+    result_copied: { copy_format: 's32', item_count: 'i' },
+    export: { export_format: 's32', item_count: 'i' },
     correction_submitted: {
       rule_id: 's64',
       rule_version: 'i',

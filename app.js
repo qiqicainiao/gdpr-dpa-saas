@@ -698,6 +698,7 @@ function bindResultActions() {
           item_count: resultItemCount,
           time_on_result_s: secondsOnResult()
         });
+        track('result_copied', { copy_format: 'text', item_count: resultItemCount });
       }
       showToast(
         copied
@@ -717,6 +718,8 @@ function bindResultActions() {
         item_count: resultItemCount,
         time_on_result_s: secondsOnResult()
       });
+      // 打印 = 把结果带走（用户存 PDF 是这条链上最强的"愿意用"信号），对齐 Q3 的 export。
+      track('export', { export_format: 'print_pdf', item_count: resultItemCount });
       window.print();
     });
   }
