@@ -23,9 +23,9 @@
   <script src="_site_config.js?v=0.3.3"></script>
   <script src="gdpr-dpa-saas-telemetry.js?v=0.3.7"></script>
   <script type="module" src="app.js?v=0.3.5"></script>
-  <!-- 补充采集（P0）：page_vitals / js_error / utm_capture。
-       放在 telemetry 之后：它靠 __TELEMETRY__.track 发送、靠 __VR_CONSENT__ 门控，
-       自己不发请求、不建队列——门控仍然只有一套。 -->
+  <!-- Extra collection (P0): page_vitals / js_error / utm_capture.
+       Loaded after telemetry: it sends via __TELEMETRY__.track and is gated by __VR_CONSENT__;
+       it issues no requests and keeps no queue, so there is still a single consent gate. -->
   <script src="telemetry-extras.js?v=1.0.2" defer></script>
 
   <script type="application/ld+json">
