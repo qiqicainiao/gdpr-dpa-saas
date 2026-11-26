@@ -26,12 +26,68 @@ const ALLOWED_SITE_SLUG = 'gdpr-dpa-saas';
    visitors see a client-side timeout instead of a readable error. */
 const TIMEOUT_MS = 25000;
 
+/* v3 telemetry SDK — one static file per site, served same-origin from here.
+   It gets its own branch instead of joining a generic GET allowlist: this proxy
+   must stay POST-only for every other path, or it turns into an open read
+   gateway for the whole API. The file name is a constant, so no user input ever
+   reaches the upstream URL. */
+const SDK_FILE = 'vr-gdpr-dpa-saas.js';
+const SDK_CACHE = 'public, max-age=31536000, immutable';
+
 function jsonError(status, code, msg) {
   return new Response(JSON.stringify({ code: code, msg: msg, trace_id: '', data: null }), {
     status: status,
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
       'Cache-Control': 'no-store'
+    }
+  });
+}
+
+/* Same-origin static SDK. Kept separate from proxyBff so the method gate above
+   cannot be widened by accident: this is the only GET this proxy will ever serve. */
+async function proxySdk(request, origin) {
+  if (request.method !== 'GET') {
+    return new Response(null, {
+      status: 405,
+      headers: { Allow: 'GET', 'Cache-Control': 'no-store' }
+    });
+  }
+
+  const url = new URL(request.url);
+  const controller = new AbortController();
+  const timer = setTimeout(function () { controller.abort(); }, TIMEOUT_MS);
+
+  let upstream;
+  try {
+    /* Host is derived from the URL, so the API sees its own hostname. */
+    upstream = await fetch(origin + '/js/' + SDK_FILE + url.search, {
+      method: 'GET',
+      headers: { 'X-Forwarded-Proto': 'https' },
+      redirect: 'manual',
+      signal: controller.signal
+    });
+  } catch (e) {
+    return new Response(null, { status: 504, headers: { 'Cache-Control': 'no-store' } });
+  } finally {
+    clearTimeout(timer);
+  }
+
+  /* A miss here means the API deployment does not carry this alias yet. Never
+     cache the miss — the next API deploy must become visible immediately. */
+  if (upstream.status !== 200) {
+    return new Response(null, {
+      status: upstream.status,
+      headers: { 'Cache-Control': 'no-store' }
+    });
+  }
+
+  return new Response(upstream.body, {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/javascript; charset=utf-8',
+      'Cache-Control': SDK_CACHE,
+      'X-Content-Type-Options': 'nosniff'
     }
   });
 }
@@ -44,6 +100,15 @@ function jsonError(status, code, msg) {
 export async function proxyBff(request, apiOrigin) {
   const origin = (apiOrigin || DEFAULT_API_ORIGIN).replace(/\/+$/, '');
   const url = new URL(request.url);
+
+  /* Static SDK lives under /bff/js/. Only the one exact file is served; every
+     other name under that prefix is a 404, so this cannot turn into a read gateway. */
+  if (url.pathname.indexOf('/bff/js/') === 0) {
+    if (url.pathname !== '/bff/js/' + SDK_FILE) {
+      return jsonError(404, 40001, 'endpoint not found');
+    }
+    return proxySdk(request, origin);
+  }
 
   if (request.method !== 'POST' && request.method !== 'OPTIONS') {
     return new Response(null, {
