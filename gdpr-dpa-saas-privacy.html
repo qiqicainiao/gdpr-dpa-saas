@@ -7,8 +7,18 @@
   <meta name="description" content="How the GDPR DPA Generator for SaaS handles form values, analytics events and local browser storage, and how to withdraw consent.">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="canonical" href="https://saasdpalab.com/gdpr-dpa-saas-privacy">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="GDPR DPA Generator for SaaS">
+  <meta property="og:title" content="Privacy Policy | GDPR DPA Generator for SaaS">
+  <meta property="og:description" content="How form values, analytics events and local browser storage are handled, and how to withdraw consent.">
+  <meta property="og:url" content="https://saasdpalab.com/gdpr-dpa-saas-privacy">
+  <meta property="og:image" content="https://saasdpalab.com/assets/og-image.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Privacy Policy | GDPR DPA Generator for SaaS">
+  <meta name="twitter:description" content="How form values, analytics events and local browser storage are handled, and how to withdraw consent.">
+  <meta name="twitter:image" content="https://saasdpalab.com/assets/og-image.png">
   <link rel="stylesheet" href="style.css?v=0.3.2">
-  <script src="_site_config.js?v=0.3.2"></script>
+  <script src="_site_config.js?v=0.3.5"></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -102,9 +112,9 @@
         <p>Do not enter customer records, special-category details, identification numbers, passwords, API keys or any real personal data sample. The generator only needs categories and short descriptions.</p>
 
         <h2>3. Analytics and consent</h2>
-        <p>Analytics are optional. The consent banner appears after your first interaction with the page, not before. Accepting and rejecting take the same number of steps, and every generator feature works if you reject.</p>
+        <p>Analytics are optional. The consent banner appears on your first visit, before any choice is made. Accepting and rejecting take the same number of steps, and every generator feature works if you reject.</p>
         <p>When you accept, the tool may send events about how it is used: which page a request started from, timings, counts of purposes or clauses, which clause was expanded, whether a clause was confirmed or corrected, and whether a draft was copied or printed. These events use a per-tab reference and never include party names, addresses, email addresses, service descriptions, sub-processor names or draft text.</p>
-        <p>When you reject or have not decided, only anonymous aggregate counts are sent. No per-tab reference, timestamp, page sequence or clause detail is included.</p>
+        <p>Consent works in three states: before you choose, every page load sends one minimal anonymous visit event (no cookie, no session identifier, no browser storage, no cross-session link) used only to count page visits in aggregate; if you accept, we also record the detailed usage events described above under a site-scoped session reference; if you decline, no analytics requests are sent at all.</p>
         <p>You can withdraw consent at any time by emailing <a href="mailto:apj56423@gmail.com">apj56423@gmail.com</a> or by clearing site data in your browser. Withdrawal stops further analytics and does not affect the generator.</p>
 
         <h2>4. What is stored in your browser</h2>
@@ -112,7 +122,7 @@
         <ul>
           <li><code>gdpr-dpa-saas:history:v1</code> — local workspace records: customer reference, normalized processing presets, template version and clause variants you reviewed. It never contains party names, addresses, email addresses, service descriptions, sub-processor names or document text.</li>
           <li><code>gdpr-dpa-saas:session</code> — a per-tab reference and generation sequence used while the tab is open.</li>
-          <li><code>gdpr-dpa-saas:consent:v1</code> — your analytics choice and the time it was made.</li>
+          <li><code>vr_consent_v1</code> — your analytics choice. Older versions stored it under <code>gdpr-dpa-saas:consent:v1</code>, which is migrated automatically and then removed.</li>
           <li><code>gdpr-dpa-saas:tab-draft</code> — an optional draft of the current form for this tab, cleared when you reset the form or close the tab.</li>
         </ul>
         <p>You can delete local workspace records from the workspace panel and clear all site data through your browser settings.</p>
@@ -159,6 +169,8 @@
             <li><a href="index.html">Generator</a></li>
             <li><a href="gdpr-dpa-saas-privacy.html">Privacy policy</a></li>
             <li><a href="gdpr-dpa-saas-terms.html">Terms of use</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+            <li><a href="refund.html">Refund policy</a></li>
           </ul>
         </div>
       </div>

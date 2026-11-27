@@ -2,7 +2,6 @@ export function initConsent() {
   const region = document.getElementById('consent-region');
   const accept = document.getElementById('consent-accept');
   const reject = document.getElementById('consent-reject');
-  const telemetry = window.__TELEMETRY__;
 
   if (!region || !accept || !reject) return;
 
@@ -10,15 +9,15 @@ export function initConsent() {
   // 结果"打开看一眼就走"的访客永远没有表态机会，pv_real 结构性偏低。首屏直接问。
   // P1-7：未表态才自动展示；已有决定则收起，但**按钮与页脚入口照旧绑定**，
   // 否则"同意过的人"永远没有撤回路径（原实现在这里直接 return）。
-  region.hidden = !!telemetry && telemetry.getConsent() !== 'unknown';
+  region.hidden = window.VR.debug().consentMode !== 'unset';
 
   accept.addEventListener('click', function () {
-    if (telemetry) telemetry.setConsent(true);
+    window.VR.setConsent(true);
     region.hidden = true;
   });
 
   reject.addEventListener('click', function () {
-    if (telemetry) telemetry.setConsent(false);
+    window.VR.setConsent(false);
     region.hidden = true;
   });
 
@@ -27,7 +26,7 @@ export function initConsent() {
   if (settings) {
     settings.addEventListener('click', function (e) {
       if (e && e.preventDefault) e.preventDefault();
-      if (telemetry) telemetry.setConsent(false);
+      window.VR.setConsent(false);
       region.hidden = false;
     });
   }

@@ -5,7 +5,7 @@ import {
   clearFieldError,
   showToast
 } from './assets/js/ui.js?v=0.3.2';
-import { requestCheck, traceTail } from './assets/js/api.js?v=0.3.2';
+import { requestCheck, traceTail } from './assets/js/api.js?v=0.3.3';
 import { createStore } from './assets/js/state.js?v=0.3.2';
 import { buildRequest, buildPreset, applyPreset } from './assets/js/payload.js?v=0.3.2';
 import { renderResult, buildDocumentText, copyToClipboard } from './assets/js/generator.js?v=0.3.2';
@@ -17,8 +17,8 @@ import {
   createEntry
 } from './assets/js/history.js?v=0.3.2';
 import { renderHistoryPanel } from './assets/js/history-panel.js?v=0.3.2';
-import { initConsent } from './assets/js/consent.js?v=0.3.4';
-import { initCorrection, mountCorrections } from './assets/js/correction.js?v=0.3.2';
+import { initConsent } from './assets/js/consent.js?v=0.3.5';
+import { initCorrection, mountCorrections } from './assets/js/correction.js?v=0.3.4';
 
 const config = window.__SITE_CONFIG__;
 const MAX_SUBPROCESSORS = 10;
@@ -35,17 +35,10 @@ const historyPanel = document.getElementById('history-panel');
 const customerRefSelect = document.getElementById('customer-ref');
 
 const store = createStore();
-const telemetry = window.__TELEMETRY__ || null;
 let activeController = null;
+let activeRun = null;
 let lastResult = null;
 let countdownTimer = null;
-let runSequence = 0;
-let inputSource = 'new';
-let toolStarted = false;
-let toolStartedAt = 0;
-let resultRenderedAt = 0;
-let resultItemCount = 0;
-let expandedClauses = new Set();
 
 if (!config) {
 
@@ -64,8 +57,14 @@ if (form) {
   bindCustomerRef();
   refreshHistory();
   initConsent();
-  initCorrection({ telemetry: telemetry, getContext: currentContext });
-  bindTelemetryGlobal();
+  initCorrection({ getContext: currentContext });
+  window.addEventListener('pagehide', () => {
+    if (!activeRun) return;
+    const run = activeRun;
+    if (activeController) activeController.abort();
+    activeController = null;
+    finishRun(run, 'timeout');
+  });
 }
 
 function fieldWrapOf(control) {
@@ -402,17 +401,49 @@ function clearAllErrors() {
   form.querySelectorAll('.field.has-error').forEach((wrap) => clearFieldError(wrap));
 }
 
+function finishRun(run, errorCode) {
+  if (activeRun !== run) return;
+  activeRun = null;
+  if (errorCode) run.fail(errorCode);
+  else run.ok();
+}
+
+function runErrorCode(response) {
+  if (response.state === 'param_error') return 'input_invalid';
+  if (response.state === 'auth') return 'auth';
+  if (response.state === 'rate_limited' || response.state === 'quota_blocked') return 'quota';
+  if (response.state === 'network_timeout') return 'timeout';
+  if (response.state === 'aborted') return 'unknown';
+  return 'upstream_5xx';
+}
+
 async function handleSubmit(event) {
   event.preventDefault();
 
   if (!config) return;
   if (store.get().status === 'loading') return;
 
+  const run = window.VR.run('gdpr-dpa-saas');
+  activeRun = run;
+  try {
+    await generateDraft(run);
+  } catch (error) {
+    if (activeRun !== run) return;
+    if (activeController) activeController.abort();
+    activeController = null;
+    setBusy(document.getElementById('generate-button'), false);
+    finishRun(run, 'unknown');
+    handleFailure({ state: 'server_error' });
+  }
+}
+
+async function generateDraft(run) {
   clearCountdown();
 
   const result = validate();
 
   if (!result.ok) {
+    finishRun(run, 'input_invalid');
     store.setError('param_error', 'Some details need your attention.');
     setStatus(
       'param_error',
@@ -430,41 +461,31 @@ async function handleSubmit(event) {
 
   const button = document.getElementById('generate-button');
   setBusy(button, true);
-  flushDwell();
   hideResult();
   lastResult = null;
   store.setLoading(0);
   setStatus('loading', 'Generating your draft on the server…');
 
   const request = buildRequest(form);
-  runSequence += 1;
-  const checkStartedAt = performance.now();
-
-  track('check_started', {
-    input_source: inputSource,
-    run_sequence: runSequence,
-    purpose_count: request.processing.purposes.length,
-    data_category_count: request.processing.data_categories.length,
-    subprocessor_count_bucket: subprocessorBucket(request.subprocessors.items.length),
-    transfer_region: request.transfers.region,
-    security_measure_count: request.security.measures.length
-  });
-  inputSource = 'new';
 
   if (activeController) activeController.abort();
   activeController = new AbortController();
   const controller = activeController;
 
   const response = await requestCheck(request, { signal: controller.signal });
-  const checkDuration = Math.round(performance.now() - checkStartedAt);
 
+  if (activeRun !== run) return;
   if (activeController === controller) activeController = null;
   setBusy(button, false);
 
-  if (response.state === 'aborted') return;
+  if (response.state === 'aborted') {
+    finishRun(run, 'unknown');
+    return;
+  }
 
   if (response.state !== 'success') {
-    handleFailure(response, checkDuration);
+    finishRun(run, runErrorCode(response));
+    handleFailure(response);
     return;
   }
 
@@ -476,48 +497,22 @@ async function handleSubmit(event) {
     renderedAt: Date.now()
   });
 
-  const provenance = summaryProvenance(saved.summary);
-
   if (saved.items.length === 0) {
     setStatus(
       'empty',
       'No applicable clauses were generated for this fact pattern. Review your inputs and try again.'
     );
+    finishRun(run);
     return;
   }
 
-  const renderStart = performance.now();
   renderResult(resultRegion, data, { traceTail: tail });
   resultRegion.hidden = false;
   const feedback = document.getElementById('result-feedback');
   if (feedback) feedback.hidden = false;
   mountCorrections(data);
-  const renderMs = Math.round(performance.now() - renderStart);
-
-  track('check_completed', Object.assign({
-    check_duration_ms: checkDuration,
-    processing_time_ms: Math.round(checkDuration + renderMs),
-    render_ms: renderMs,
-    item_count: saved.items.length,
-    warning_count: typeof saved.summary.warning_count === 'number' ? saved.summary.warning_count : 0
-  }, provenance));
 
   lastResult = data;
-  resultRenderedAt = Date.now();
-  resultItemCount = saved.items.length;
-  expandedClauses = new Set();
-
-  track('result_viewed', {
-    render_ms: renderMs,
-    item_count: saved.items.length,
-    warning_count: typeof saved.summary.warning_count === 'number' ? saved.summary.warning_count : 0,
-    sample_source: 'system'
-  });
-  track('tool_completed', {
-    tool_name: 'gdpr_dpa_generator',
-    succeeded: true,
-    duration_ms: toolStartedAt > 0 ? Math.round(Date.now() - toolStartedAt) : 0
-  });
 
   setStatus(
     'success',
@@ -529,9 +524,10 @@ async function handleSubmit(event) {
 
   resultRegion.scrollIntoView({ block: 'start', behavior: 'smooth' });
   document.getElementById('result-region-title')?.focus({ preventScroll: true });
+  finishRun(run);
 }
 
-function handleFailure(response, checkDuration) {
+function handleFailure(response) {
   const tail = response.traceId ? traceTail(response.traceId) : '';
   const ref = tail ? ' Reference ' + tail + '.' : '';
   let message = '';
@@ -548,33 +544,13 @@ function handleFailure(response, checkDuration) {
   } else if (response.state === 'quota_blocked') {
     status = 'quota_blocked';
     message = 'The free quota for this workspace is used up.' + ref;
-  } else if (response.state === 'network_timeout') {
+  } else if (response.state === 'network_timeout' || response.state === 'network_error') {
     status = 'network_timeout';
     message = 'We could not reach the generation service. Check your connection and try again.';
   } else {
     status = 'server_error';
     message = 'The generation service reported an error. Try again in a moment.' + ref;
   }
-
-  track('check_failed', {
-    error_code: status,
-    check_duration_ms: typeof checkDuration === 'number' ? checkDuration : 0,
-    degraded: false,
-    rule_id: null,
-    rule_version: null,
-    confidence: null,
-    matched_terms: null,
-    diff_detail: null,
-    sample_source: 'system'
-  });
-  // error_stage：把"失败了"细化到哪一段。这里是检查请求失败的统一出口，
-  // 按状态串粗分：超时/网络/其余算 compute——比一律 unknown 有定位价值。
-  track('tool_failed', {
-    error_code: status,
-    error_stage: /timeout/i.test(status) ? 'timeout' : (/network|fetch|offline/i.test(status) ? 'network' : 'compute')
-  });
-
-  inputSource = 'retry';
 
   store.setError(status, message, {
     traceId: response.traceId,
@@ -648,7 +624,6 @@ function refreshHistory() {
 
 function loadWorkspace(entry) {
   if (!entry) return;
-  inputSource = 'history';
   if (customerRefSelect) {
     customerRefSelect.value = entry.customer_ref;
     syncSelectLabel(customerRefSelect);
@@ -692,14 +667,6 @@ function bindResultActions() {
     copyButton.addEventListener('click', async () => {
       if (!lastResult) return;
       const copied = await copyToClipboard(buildDocumentText(lastResult));
-      if (copied) {
-        track('dpa_copied', {
-          copy_scope: 'full_dpa',
-          item_count: resultItemCount,
-          time_on_result_s: secondsOnResult()
-        });
-        track('result_copied', { copy_format: 'text', item_count: resultItemCount });
-      }
       showToast(
         copied
           ? 'Draft copied to the clipboard.'
@@ -713,13 +680,6 @@ function bindResultActions() {
   if (printButton) {
     printButton.addEventListener('click', () => {
       if (!lastResult) return;
-      track('print_requested', {
-        print_scope: 'full_dpa',
-        item_count: resultItemCount,
-        time_on_result_s: secondsOnResult()
-      });
-      // 打印 = 把结果带走（用户存 PDF 是这条链上最强的"愿意用"信号），对齐 Q3 的 export。
-      track('export', { export_format: 'print_pdf', item_count: resultItemCount });
       window.print();
     });
   }
@@ -727,14 +687,11 @@ function bindResultActions() {
 
 function handleReset() {
   window.setTimeout(() => {
-    flushDwell();
     clearAllErrors();
     hideResult();
     const feedback = document.getElementById('result-feedback');
     if (feedback) feedback.hidden = true;
     lastResult = null;
-    resultRenderedAt = 0;
-    expandedClauses = new Set();
     clearCountdown();
     store.clearResult();
     setStatus('idle', 'No draft generated yet.');
@@ -744,78 +701,6 @@ function handleReset() {
     }
     syncRepeaterState();
   }, 0);
-}
-
-function track(event, fields) {
-  if (!telemetry || typeof telemetry.track !== 'function') return;
-  try {
-    telemetry.track(event, fields);
-  } catch (error) {
-
-  }
-}
-
-function bindTelemetryGlobal() {
-  const markToolStart = () => {
-    if (toolStarted) return;
-    toolStarted = true;
-    toolStartedAt = Date.now();
-    track('tool_started', { tool_name: 'gdpr_dpa_generator' });
-  };
-
-  form.addEventListener('input', markToolStart);
-  form.addEventListener('change', markToolStart);
-
-  document.addEventListener('toggle', (event) => {
-    const node = event.target;
-    if (!node || !node.classList || !node.classList.contains('clause-alternatives')) return;
-    if (!node.open) return;
-    const card = node.closest('[data-clause-key]');
-    const key = card ? card.getAttribute('data-clause-key') : '';
-    if (!key || expandedClauses.has(key)) return;
-    expandedClauses.add(key);
-    track('clause_expanded', { clause_key: key });
-  }, true);
-
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') flushDwell();
-  });
-}
-
-function flushDwell() {
-  if (!resultRenderedAt || !lastResult) return;
-  const seconds = Math.round((Date.now() - resultRenderedAt) / 1000);
-  if (seconds < 1) return;
-
-  track('result_dwell', {
-    dwell_seconds: seconds,
-    expanded_clause_count: expandedClauses.size,
-    item_count: resultItemCount,
-    sample_source: 'system'
-  });
-  resultRenderedAt = Date.now();
-}
-
-function secondsOnResult() {
-  if (!resultRenderedAt) return 0;
-  return Math.round((Date.now() - resultRenderedAt) / 1000);
-}
-
-function summaryProvenance(summary) {
-  return {
-    rule_id: summary.rule_id ? String(summary.rule_id) : '',
-    rule_version: Number(summary.rule_version) || 0,
-    confidence: Number(summary.confidence) || 0,
-    matched_terms: Array.isArray(summary.matched_terms) ? summary.matched_terms : [],
-    diff_detail: summary.diff_detail ? String(summary.diff_detail) : '',
-    sample_source: summary.sample_source ? String(summary.sample_source) : 'system'
-  };
-}
-
-function subprocessorBucket(count) {
-  if (!count) return '0';
-  if (count <= 3) return '1-3';
-  return '4-10';
 }
 
 function currentContext() {

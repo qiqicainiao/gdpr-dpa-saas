@@ -40,6 +40,8 @@ The denominator is set by the server for the submitted fact pattern. The ratio i
 - [Home](https://saasdpalab.com/)
 - [Privacy Policy](https://saasdpalab.com/gdpr-dpa-saas-privacy)
 - [Terms of Use](https://saasdpalab.com/gdpr-dpa-saas-terms)
+- [Pricing](https://saasdpalab.com/pricing): all generator features are free in this MVP; Pro plan is not yet available.
+- [Refund Policy](https://saasdpalab.com/refund): how refunds are handled once paid plans launch.
 
 ## Primary source
 

@@ -3,8 +3,10 @@ const STATE = {
   PARAM_ERROR: 'param_error',
   RATE_LIMITED: 'rate_limited',
   QUOTA_BLOCKED: 'quota_blocked',
+  AUTH: 'auth',
   SERVER_ERROR: 'server_error',
   NETWORK_TIMEOUT: 'network_timeout',
+  NETWORK_ERROR: 'network_error',
   ABORTED: 'aborted'
 };
 
@@ -70,6 +72,10 @@ export async function requestCheck(payload, options = {}) {
       };
     }
 
+    if (response.status === 401 || code === 'UNAUTHORIZED') {
+      return { state: STATE.AUTH, traceId: traceId, message: msg };
+    }
+
     if (response.status === 403 || code === 'QUOTA_BLOCKED') {
       return {
         state: STATE.QUOTA_BLOCKED,
@@ -91,7 +97,7 @@ export async function requestCheck(payload, options = {}) {
     if (timedOut) {
       return { state: STATE.NETWORK_TIMEOUT, message: 'The request timed out.' };
     }
-    return { state: STATE.NETWORK_TIMEOUT, message: 'The generation service is unreachable.' };
+    return { state: STATE.NETWORK_ERROR, message: 'The generation service is unreachable.' };
   } finally {
     window.clearTimeout(timer);
     if (externalSignal) externalSignal.removeEventListener('abort', relayAbort);

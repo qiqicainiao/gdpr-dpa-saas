@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script src="assets/js/telemetry-result-hooks.js?v=1.0.0"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GDPR DPA Generator for SaaS — Article 28 Drafts</title>
@@ -20,13 +19,9 @@
   <meta name="twitter:description" content="Customer-specific Article 28 DPA drafts: review each clause, copy or print, keep a local workspace. Free in this MVP.">
   <meta name="twitter:image" content="https://saasdpalab.com/assets/og-image.png">
   <link rel="stylesheet" href="style.css?v=0.3.2">
-  <script src="_site_config.js?v=0.3.3"></script>
-  <script src="gdpr-dpa-saas-telemetry.js?v=0.3.8"></script>
-  <script type="module" src="app.js?v=0.3.6"></script>
-  <!-- Extra collection (P0): page_vitals / js_error / utm_capture.
-       Loaded after telemetry: it sends via __TELEMETRY__.track and is gated by __VR_CONSENT__;
-       it issues no requests and keeps no queue, so there is still a single consent gate. -->
-  <script src="telemetry-extras.js?v=1.0.2" defer></script>
+  <script src="_site_config.js?v=0.3.5"></script>
+  <script src="/bff/js/vr-gdpr-dpa-saas.js?v=3.0.0" data-vr-site="gdpr-dpa-saas" defer></script>
+  <script type="module" src="app.js?v=0.3.8"></script>
 
   <script type="application/ld+json">
   {
@@ -737,7 +732,7 @@
 
     <div class="container">
       <div class="consent-region" id="consent-region" role="region" aria-label="Analytics consent" hidden>
-        <p>We would like to collect anonymous usage events to understand how the generator is used. You can reject analytics and still use every feature. Read the <a href="gdpr-dpa-saas-privacy.html">privacy policy</a>.</p>
+        <p>We use an anonymous page-visit count (no cookies, no cross-session identifiers). If you accept, we also record detailed usage data (tool duration, outcomes, error types) to improve the product. Read the <a href="gdpr-dpa-saas-privacy.html">privacy policy</a>.</p>
         <div class="consent-actions">
           <button type="button" class="btn btn-primary" id="consent-accept">Accept analytics</button>
           <button type="button" class="btn btn-secondary" id="consent-reject">Reject analytics</button>
@@ -762,6 +757,8 @@
             <li><a href="index.html">Generator</a></li>
             <li><a href="gdpr-dpa-saas-privacy.html">Privacy policy</a></li>
             <li><a href="gdpr-dpa-saas-terms.html">Terms of use</a></li>
+            <li><a href="/pricing">Pricing</a></li>
+            <li><a href="/refund">Refund policy</a></li>
             <li><a href="#" id="gdpr-consent-settings" rel="nofollow">Cookie settings</a></li>
           </ul>
         </div>

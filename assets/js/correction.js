@@ -13,13 +13,11 @@ const REASONS = [
 
 const MISSING = REASONS.filter((item) => item[0] !== 'unspecified');
 
-let telemetry = null;
 let getContext = null;
 let attempts = new Map();
 let activePanel = null;
 
 export function initCorrection(options) {
-  telemetry = options.telemetry;
   getContext = options.getContext;
 
   const flagButton = document.getElementById('report-missing');
@@ -117,9 +115,59 @@ function buildCorrectionPanel(host, item) {
   host.appendChild(submit);
 }
 
+function trainingEventId() {
+  const bytes = new Uint8Array(8);
+  try {
+    window.crypto.getRandomValues(bytes);
+  } catch (error) {
+    for (let i = 0; i < bytes.length; i += 1) bytes[i] = Math.floor(Math.random() * 256);
+  }
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+function reportTrainingEvent(event, fields) {
+  const debug = window.VR.debug();
+  if (debug.isolated || debug.consentMode !== 'granted') return;
+
+  const userAgent = String(window.navigator.userAgent || '').toLowerCase();
+  let deviceType = 'unknown';
+  if (userAgent) {
+    deviceType = /ipad|tablet/.test(userAgent) || (/android/.test(userAgent) && !/mobile/.test(userAgent))
+      ? 'tablet'
+      : (/mobile|iphone|ipod|android|phone/.test(userAgent) ? 'mobile' : 'desktop');
+  }
+  let referrerHost = 'direct';
+  if (document.referrer) {
+    try {
+      referrerHost = new URL(document.referrer).hostname.toLowerCase().replace(/^www\./, '') || 'direct';
+    } catch (error) {}
+  }
+
+  fetch(debug.endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+    body: JSON.stringify({
+      site_id: debug.siteId,
+      consent: true,
+      sess_ref: debug.sessRef,
+      page_path: debug.path || window.location.pathname,
+      device_type: deviceType,
+      referrer_host: referrerHost,
+      schema_v: 1,
+      sdk_v: debug.version,
+      events: [Object.assign({
+        event: event,
+        event_id: trainingEventId(),
+        ts: Date.now()
+      }, fields)]
+    }),
+    keepalive: true
+  }).catch(function () {});
+}
+
 function submitCorrection(item, reason, button) {
   const context = getContext ? getContext() : null;
-  if (!context || !telemetry) return;
+  if (!context) return;
 
   const attempt = (attempts.get(item.clause_key) || 0) + 1;
   attempts.set(item.clause_key, attempt);
@@ -143,7 +191,7 @@ function submitCorrection(item, reason, button) {
     degraded: degraded
   }, context.preset);
 
-  telemetry.track('correction_submitted', fields);
+  reportTrainingEvent('correction_submitted', fields);
 
   if (button) {
     button.disabled = true;
@@ -153,7 +201,7 @@ function submitCorrection(item, reason, button) {
 
 function confirmClause(item, button) {
   const context = getContext ? getContext() : null;
-  if (!context || !telemetry) return;
+  if (!context) return;
 
   const degraded = !item.rule_id || !item.rule_version;
   const fields = Object.assign({
@@ -168,7 +216,7 @@ function confirmClause(item, button) {
     degraded: degraded
   }, context.preset);
 
-  telemetry.track('correction_confirmed', fields);
+  reportTrainingEvent('correction_confirmed', fields);
 
   if (button) {
     button.disabled = true;
@@ -227,7 +275,7 @@ function buildFalseNegativePanel(host) {
   submit.textContent = 'Report missing requirement';
   submit.addEventListener('click', () => {
     const context = getContext ? getContext() : null;
-    if (!context || !telemetry) return;
+    if (!context) return;
 
     const fields = Object.assign({
       rule_id: null,
@@ -244,7 +292,7 @@ function buildFalseNegativePanel(host) {
       degraded: false
     }, context.preset);
 
-    telemetry.track('false_negative_flagged', fields);
+    reportTrainingEvent('false_negative_flagged', fields);
 
     submit.disabled = true;
     submit.textContent = 'Report recorded';
