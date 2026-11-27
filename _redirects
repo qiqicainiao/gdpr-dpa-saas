@@ -1,2 +1,6 @@
 # www -> apex (canonical host is https://saasdpalab.com, see <link rel="canonical">)
 https://www.saasdpalab.com/*  https://saasdpalab.com/:splat  301!
+
+# 常规法务路径 -> 真实文件名
+/privacy  /gdpr-dpa-saas-privacy  301
+/terms    /gdpr-dpa-saas-terms    301
