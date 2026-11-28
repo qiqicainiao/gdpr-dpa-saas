@@ -1708,3 +1708,390 @@ textarea::placeholder {
     scroll-behavior: auto !important;
   }
 }
+
+/* ============================================================================
+   账号 / 登录弹层 / 定价骨架（S0 零付费期，2026-11-27）
+   只用本站 :root 的 token（颜色/间距/圆角/字号），不引入第二套色板。
+   ============================================================================ */
+
+[hidden]{display:none!important}
+
+/* ---------- 页头账号位 ---------- */
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.account-slot {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-left: var(--space-4);
+  border-left: 1px solid var(--color-border);
+  /* 邮箱是可变长内容，允许收缩，避免把导航挤出视口（fixed 弹层会因此偏右被裁） */
+  min-width: 0;
+  flex-shrink: 1;
+}
+
+.account-slot:empty {
+  display: none;
+}
+
+.account-link {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--color-muted);
+  cursor: pointer;
+}
+
+.account-link:hover {
+  color: var(--color-ink);
+  text-decoration: underline;
+}
+
+.account-who {
+  font-size: 14px;
+  color: var(--color-muted);
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+a.account-who {
+  text-decoration: none;
+}
+
+a.account-who:hover {
+  color: var(--color-ink);
+  text-decoration: underline;
+}
+
+.account-badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  background: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+
+a.account-badge {
+  text-decoration: none;
+}
+
+a.account-badge:hover {
+  color: var(--color-accent-hover);
+  text-decoration: none;
+}
+
+/* 免费档徽标：同一形状，换灰。颜色本身也是信息。 */
+.account-badge.is-free {
+  color: var(--color-muted);
+  background: var(--color-bg);
+  border-color: var(--color-border);
+}
+
+/* ---------- 会员页 ---------- */
+
+.account-main {
+  max-width: 760px;
+  padding-top: var(--space-12);
+  padding-bottom: var(--space-8);
+}
+
+.account-title {
+  margin-bottom: var(--space-6);
+}
+
+.account-loading {
+  color: var(--color-muted);
+}
+
+.account-lead {
+  margin: 0 0 var(--space-6);
+  color: var(--color-muted);
+}
+
+.account-lead strong {
+  color: var(--color-ink);
+}
+
+.account-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  margin-bottom: var(--space-4);
+}
+
+.account-card h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.account-card p {
+  margin: 0 0 var(--space-3);
+}
+
+.account-card p:last-child {
+  margin-bottom: 0;
+}
+
+.account-status {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.account-note {
+  font-size: 14px;
+  color: var(--color-muted);
+}
+
+.account-note.is-blocked {
+  color: var(--color-danger);
+  font-weight: 650;
+}
+
+.account-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.account-cta {
+  margin-top: var(--space-4);
+}
+
+/* ---------- 定价页 ---------- */
+
+.pricing-title {
+  margin-bottom: var(--space-6);
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-4);
+  margin: var(--space-6) 0;
+}
+
+.pricing-testmode {
+  margin: var(--space-4) 0 0;
+  font-size: 14px;
+  color: var(--color-muted);
+}
+
+.pricing-related {
+  margin-top: var(--space-8);
+  font-size: 14px;
+  color: var(--color-muted);
+}
+
+/* ---------- 登录弹层 ---------- */
+
+body.modal-open {
+  overflow: hidden;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background: rgb(30 36 33 / 45%);
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: min(380px, 100%);
+  max-height: calc(100vh - var(--space-8));
+  overflow-y: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-result);
+  padding: var(--space-6);
+}
+
+.modal h3 {
+  margin: 0 0 var(--space-2);
+  font-size: 22px;
+}
+
+.modal-sub {
+  margin: 0 0 var(--space-4);
+  font-size: 14px;
+  color: var(--color-muted);
+  line-height: 1.5;
+}
+
+.modal-close {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--color-muted);
+  cursor: pointer;
+}
+
+.modal-close:hover {
+  background: var(--color-surface-subtle);
+  color: var(--color-ink);
+}
+
+.modal label {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--color-ink);
+}
+
+.modal input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  margin-bottom: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-size: 16px;
+  color: var(--color-ink);
+  background: var(--color-surface);
+}
+
+.modal input:focus {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 1px;
+  border-color: var(--color-focus);
+}
+
+.modal .btn {
+  width: 100%;
+}
+
+.auth-error {
+  margin: 0 0 var(--space-4);
+  padding: var(--space-2) var(--space-3);
+  font-size: 14px;
+  color: var(--color-danger);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.modal-switch {
+  margin: var(--space-4) 0 0;
+  text-align: center;
+  font-size: 14px;
+}
+
+.link-btn {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--color-accent);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.link-btn:hover {
+  color: var(--color-accent-hover);
+}
+
+/* ---------- toast（account.js 只写 #toast，不碰本站 .toast-region 里的提示） ---------- */
+
+body > .toast {
+  position: fixed;
+  left: 50%;
+  bottom: var(--space-6);
+  z-index: 300;
+  max-width: min(420px, calc(100% - var(--space-8)));
+  box-shadow: var(--shadow-result);
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, 12px);
+  transition: opacity 160ms ease, transform 160ms ease, visibility 160ms ease;
+}
+
+body > .toast.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
+
+body > .toast.error {
+  background: var(--color-danger);
+}
+
+body > .toast.ok {
+  background: var(--color-success);
+}
+
+/* ---------- 小屏（≤390px 不横向溢出，PRO 徽标不隐藏） ---------- */
+
+@media (max-width: 420px) {
+  .header-inner {
+    flex-wrap: wrap;
+    row-gap: var(--space-2);
+  }
+
+  .site-nav {
+    width: 100%;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+
+  .site-nav ul {
+    gap: var(--space-4);
+  }
+
+  .account-slot {
+    gap: var(--space-2);
+    padding-left: var(--space-2);
+  }
+
+  /* 只收起邮箱（可变长），Pro 徽标与 Sign out 仍然可见 */
+  .account-who {
+    display: none;
+  }
+
+  .account-main {
+    padding-top: var(--space-8);
+  }
+
+  .account-card {
+    padding: var(--space-4);
+  }
+
+  .modal {
+    padding: var(--space-4);
+  }
+}

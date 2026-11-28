@@ -3,19 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pro | GDPR DPA Generator for SaaS</title>
-  <meta name="description" content="Pro plan for the GDPR DPA Generator for SaaS is coming soon. Pricing and plan details will be published on this page when the plan launches.">
+  <title>Pricing | GDPR DPA Generator for SaaS</title>
+  <meta name="description" content="Everything on this site is free right now — no daily limit, no card required. There is no paid tier today.">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="canonical" href="https://saasdpalab.com/pricing">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="GDPR DPA Generator for SaaS">
-  <meta property="og:title" content="Pro | GDPR DPA Generator for SaaS">
-  <meta property="og:description" content="Pro plan for the GDPR DPA Generator for SaaS is coming soon.">
+  <meta property="og:title" content="Pricing | GDPR DPA Generator for SaaS">
+  <meta property="og:description" content="Everything on this site is free right now — no daily limit, no card required.">
   <meta property="og:url" content="https://saasdpalab.com/pricing">
   <meta property="og:image" content="https://saasdpalab.com/assets/og-image.png">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Pro | GDPR DPA Generator for SaaS">
-  <meta name="twitter:description" content="Pro plan for the GDPR DPA Generator for SaaS is coming soon.">
+  <meta name="twitter:title" content="Pricing | GDPR DPA Generator for SaaS">
+  <meta name="twitter:description" content="Everything on this site is free right now — no daily limit, no card required.">
   <meta name="twitter:image" content="https://saasdpalab.com/assets/og-image.png">
   <link rel="stylesheet" href="style.css?v=0.3.2">
   <script src="_site_config.js?v=0.3.5"></script>
@@ -25,7 +25,7 @@
     "@type": "BreadcrumbList",
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://saasdpalab.com/" },
-      { "@type": "ListItem", "position": 2, "name": "Pro", "item": "https://saasdpalab.com/pricing" }
+      { "@type": "ListItem", "position": 2, "name": "Pricing", "item": "https://saasdpalab.com/pricing" }
     ]
   }
   </script>
@@ -33,14 +33,14 @@
   {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Pro — GDPR DPA Generator for SaaS",
+    "name": "Pricing — GDPR DPA Generator for SaaS",
     "url": "https://saasdpalab.com/pricing",
     "inLanguage": "en",
     "isPartOf": { "@type": "WebSite", "name": "GDPR DPA Generator for SaaS", "url": "https://saasdpalab.com/" }
   }
   </script>
 </head>
-<body>
+<body data-page="pricing">
   <a class="skip-link" href="#main">Skip to main content</a>
 
   <header class="site-header">
@@ -57,16 +57,29 @@
           <li><a href="gdpr-dpa-saas-privacy.html">Privacy</a></li>
           <li><a href="gdpr-dpa-saas-terms.html">Terms</a></li>
         </ul>
+        <div class="account-slot" id="account-slot"></div>
       </nav>
     </div>
   </header>
 
   <main id="main">
     <div class="container page">
-      <div class="prose">
-        <h1>Pro</h1>
-        <p class="lede">Pro is coming soon.</p>
-        <p>We are building a Pro plan with additional features. Pricing and plan details will be published on this page when the plan launches.</p>
+      <div class="account-main">
+        <h1 class="pricing-title">Pricing</h1>
+
+        <!-- 不可售时显示；可售时由 account.js 隐藏 -->
+        <section id="pricing-free-note">
+          <p>Everything on this site is free right now — no daily limit, no card required.</p>
+          <p>There is no paid tier today. When Pro launches, prices will be published on this page.</p>
+        </section>
+
+        <!-- 可售时才显示；本期永远 hidden，但骨架必须在（后端打开 sellable 时才能长出档位卡） -->
+        <div id="pricing-plans" class="pricing-grid" hidden></div>
+        <p class="pricing-testmode" id="pricing-testmode" hidden>Test mode — no real charge.</p>
+
+        <p class="pricing-related">
+          See also: <a href="gdpr-dpa-saas-terms.html">Terms of Use</a> · <a href="refund.html">Refund Policy</a> · <a href="gdpr-dpa-saas-privacy.html">Privacy Policy</a>
+        </p>
       </div>
     </div>
   </main>
@@ -92,5 +105,27 @@
       <p class="footer-meta">All generator features are free in this MVP. Draft text must be reviewed by qualified counsel before signature.</p>
     </div>
   </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- 弹层写在标记里（不由 JS 造），CSP 就不需要 innerHTML 许可。 -->
+  <div class="modal-backdrop" id="auth-modal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+      <button type="button" class="modal-close" id="auth-close" aria-label="Close">×</button>
+      <h3 id="auth-title">Sign in</h3>
+      <p class="modal-sub" id="auth-sub">Your checks and Pro plan are tied to this account.</p>
+      <form id="auth-form" novalidate>
+        <label for="auth-email">Email</label>
+        <input type="email" id="auth-email" name="email" required autocomplete="email" placeholder="you@company.com">
+        <label for="auth-password">Password</label>
+        <input type="password" id="auth-password" name="password" required minlength="8" autocomplete="current-password" placeholder="At least 8 characters">
+        <p class="auth-error" id="auth-error" role="alert" hidden></p>
+        <button type="submit" class="btn btn-primary" id="auth-submit">Sign in</button>
+      </form>
+      <p class="modal-switch"><button type="button" class="link-btn" id="auth-switch">New here? Create an account</button></p>
+    </div>
+  </div>
+
+  <script src="assets/js/account.js?v=3.2.0" data-account-site="gdpr-dpa-saas"></script>
 </body>
 </html>

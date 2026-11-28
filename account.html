@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your account | GDPR DPA Generator for SaaS</title>
+  <meta name="description" content="Plan status and account details for the GDPR DPA Generator for SaaS.">
+  <!-- 私有页：不索引。内容只对已登录的这个人有意义。 -->
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://saasdpalab.com/account">
+
+  <link rel="stylesheet" href="style.css?v=0.3.2">
+  <script src="_site_config.js?v=0.3.5"></script>
+  <script src="/bff/js/vr-gdpr-dpa-saas.js?v=3.0.0" data-vr-site="gdpr-dpa-saas" defer></script>
+</head>
+<!-- data-page 是这一页的身份标记：account.js 靠它区分"账号页"与工具页，不靠 URL 字符串。 -->
+<body data-page="account">
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-hidden="true">DPA</span>
+        <span>GDPR DPA Generator for SaaS</span>
+      </a>
+      <nav class="site-nav" aria-label="Main">
+        <ul>
+          <li><a href="index.html#generator">Generator</a></li>
+          <li><a href="index.html#how-it-works">How it works</a></li>
+          <li><a href="index.html#faq">FAQ</a></li>
+          <li><a href="gdpr-dpa-saas-privacy.html">Privacy</a></li>
+          <li><a href="gdpr-dpa-saas-terms.html">Terms</a></li>
+        </ul>
+        <div class="account-slot" id="account-slot"></div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="container page">
+      <div class="account-main">
+        <h1 class="account-title">Your account</h1>
+
+        <!-- 付款回跳提示：文案与显示时机全由 account.js 依据 billing/status 决定 -->
+        <div id="paid-banner" role="status" aria-live="polite" hidden></div>
+
+        <p class="account-loading" id="account-loading">Loading your account…</p>
+
+        <!-- 未登录：这一页没有任何属于他的信息可看，只给登录/注册两个出口 -->
+        <section class="account-card" id="account-guest" hidden>
+          <h2>Sign in to see your account</h2>
+          <p>Plan status and account details belong to the account you are signed in with — there is nothing to show until you sign in.</p>
+          <div class="account-actions">
+            <button type="button" class="btn btn-primary" id="account-signin">Sign in</button>
+            <button type="button" class="btn btn-secondary" id="account-register">Create account</button>
+          </div>
+        </section>
+
+        <!-- 站点没开账号（me 返回 404）：只给一句说明 -->
+        <section class="account-card" id="account-closed" hidden>
+          <h2>Accounts are not open on this site yet</h2>
+          <p class="account-note">Everything on this site works without signing in.</p>
+        </section>
+
+        <div id="account-signedin" hidden>
+          <p class="account-lead">
+            Signed in as <strong id="account-email">—</strong><span id="account-since-wrap" hidden> · member since <span id="account-since"></span></span>
+          </p>
+
+          <section class="account-card" aria-label="Your plan">
+            <div class="account-status">
+              <span class="account-badge is-free" id="account-plan-badge">—</span>
+              <h2 id="account-plan-name">…</h2>
+            </div>
+            <p id="account-plan-line">…</p>
+            <p class="account-note" id="account-quota" hidden></p>
+            <p class="account-note" id="account-pricing-notice" hidden></p>
+            <p class="account-note" id="account-manage" hidden>Change your card, download invoices or cancel from the link in your Creem receipt email.</p>
+            <a class="btn btn-primary account-cta" id="account-upgrade" href="pricing.html" hidden>Upgrade to Pro</a>
+            <p class="account-note account-testmode" id="account-testmode" hidden>Test mode — no real charge.</p>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h2>GDPR DPA Generator for SaaS</h2>
+          <p class="small muted">A free drafting tool for SaaS companies acting as a processor. It generates a starting draft for review and does not provide legal advice.</p>
+        </div>
+        <div>
+          <h2>Pages</h2>
+          <ul>
+            <li><a href="index.html">Generator</a></li>
+            <li><a href="gdpr-dpa-saas-privacy.html">Privacy policy</a></li>
+            <li><a href="gdpr-dpa-saas-terms.html">Terms of use</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+            <li><a href="refund.html">Refund policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <p class="footer-meta">All generator features are free in this MVP. Draft text must be reviewed by qualified counsel before signature.</p>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- 弹层写在标记里（不由 JS 造），CSP 就不需要 innerHTML 许可。 -->
+  <div class="modal-backdrop" id="auth-modal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+      <button type="button" class="modal-close" id="auth-close" aria-label="Close">×</button>
+      <h3 id="auth-title">Sign in</h3>
+      <p class="modal-sub" id="auth-sub">Your checks and Pro plan are tied to this account.</p>
+      <form id="auth-form" novalidate>
+        <label for="auth-email">Email</label>
+        <input type="email" id="auth-email" name="email" required autocomplete="email" placeholder="you@company.com">
+        <label for="auth-password">Password</label>
+        <input type="password" id="auth-password" name="password" required minlength="8" autocomplete="current-password" placeholder="At least 8 characters">
+        <p class="auth-error" id="auth-error" role="alert" hidden></p>
+        <button type="submit" class="btn btn-primary" id="auth-submit">Sign in</button>
+      </form>
+      <p class="modal-switch"><button type="button" class="link-btn" id="auth-switch">New here? Create an account</button></p>
+    </div>
+  </div>
+
+  <script src="assets/js/account.js?v=3.2.0" data-account-site="gdpr-dpa-saas"></script>
+</body>
+</html>
